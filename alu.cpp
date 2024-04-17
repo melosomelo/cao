@@ -23,6 +23,8 @@ void ALU::compute()
     result.write(a.read() ^ b_value ^ cin.read());
     break;
   }
+  zero.write(result.read() == 0);
+  less.write(a < b);
 }
 
 int sc_main(int, char *[])

@@ -26,7 +26,8 @@ enum ALUOperation
  *   - op: operation control signal.
  * Output ports:
  *   - result: the result of the calculation of the chosen operation.
- *   - cout
+ *   - zero: signals if result equals to 0. used for conditional branching.
+ *   - less: outputs if a < b.
  */
 
 SC_MODULE(ALU)
@@ -37,6 +38,8 @@ SC_MODULE(ALU)
   sc_in<bool> b_invert;
   sc_in<sc_uint<2>> op;
   sc_out<sc_uint<32>> result;
+  sc_out<bool> zero;
+  sc_out<bool> less;
 
   void compute();
 
