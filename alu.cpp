@@ -11,19 +11,15 @@ void ALU::compute()
   switch (op.read())
   {
   case ALUOperation::AND:
-    cout.write(0);
     result.write(a.read() & b_value);
     break;
   case ALUOperation::OR:
-    cout.write(0);
     result.write(a.read() | b_value);
     break;
   case ALUOperation::XOR:
-    cout.write(0);
     result.write(a.read() ^ b_value);
     break;
   case ALUOperation::ADD:
-    cout.write((b_value & cin.read()) | (a.read() & cin.read()) | (a.read() & b_value));
     result.write(a.read() ^ b_value ^ cin.read());
     break;
   }
@@ -31,4 +27,14 @@ void ALU::compute()
 
 int sc_main(int, char *[])
 {
+  sc_signal<sc_uint<32>> a, b, result;
+  sc_signal<bool> cin, b_invert, cout;
+
+  ALU alu("alu");
+  alu.a(a);
+  alu.b(b);
+  alu.cin(cin);
+  alu.b_invert(b_invert);
+  alu.result(result);
+  alu.cout(cout);
 }
