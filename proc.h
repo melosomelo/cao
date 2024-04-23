@@ -11,6 +11,7 @@ SC_MODULE(proc)
   sc_in<bool> clk;
   sc_in<bool> reset;
 
+  // The processor modules.
   // The program counter register. Holds the value of the current instruction.
   reg *pc_reg;
   // Instruction memory.
@@ -37,8 +38,6 @@ SC_MODULE(proc)
 
   SC_CTOR(proc)
   {
-    SC_METHOD(print_state);
-    sensitive << clk.pos();
     init();
   };
 
@@ -47,6 +46,7 @@ SC_MODULE(proc)
 
   // Debug method.
   void print_state();
+  void dump_state();
 };
 
 #endif

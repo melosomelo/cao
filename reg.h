@@ -20,7 +20,7 @@ SC_MODULE(reg)
   SC_CTOR(reg)
   {
     SC_METHOD(entry);
-    sensitive << reset << clk.pos();
+    sensitive << reset << clk.neg();
     val = 0;
   }
 

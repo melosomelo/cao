@@ -27,6 +27,17 @@ void proc::print_state()
   cout << "current_inst: 0x" << std::hex << current_inst.read() << std::dec << std::endl;
 }
 
+void proc::dump_state()
+{
+  std::ofstream outfile("processor.dump");
+
+  outfile << "pc: " << pc << endl;
+  outfile << "pc4: " << pc4 << endl;
+  outfile << "current_inst: 0x" << std::hex << current_inst.read() << std::dec << std::endl;
+
+  outfile.close();
+}
+
 int sc_main(int argc, char *argv[])
 {
   sc_clock clk("clk", 1, SC_NS);
@@ -42,16 +53,16 @@ int sc_main(int argc, char *argv[])
   sc_time cycle_time = sc_time(1, SC_NS);
 
   // Simulate for 10 cycles
-  for (int i = 0; i < 3; ++i)
+  for (int i = 0; i < 1; ++i)
   {
-    cout << ">>>> Cycle " << i << " - Time: " << sim_time << endl;
-
     // Wait for 1 second
     sc_start(cycle_time);
 
     // Update simulation time
     sim_time += cycle_time;
   }
+
+  proc.dump_state();
 
   return 0;
 }
