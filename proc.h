@@ -45,7 +45,6 @@ SC_MODULE(proc)
   void init();
 
   // Debug method.
-  void print_state();
   void dump_state();
 };
 

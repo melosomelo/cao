@@ -20,13 +20,6 @@ void proc::init()
   add4->zero(dummy_zero_add4);
 }
 
-void proc::print_state()
-{
-  cout << "pc: " << pc << endl;
-  cout << "pc4: " << pc4 << endl;
-  cout << "current_inst: 0x" << std::hex << current_inst.read() << std::dec << std::endl;
-}
-
 void proc::dump_state()
 {
   std::ofstream outfile("processor.dump");
