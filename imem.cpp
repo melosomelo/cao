@@ -2,5 +2,6 @@
 
 void imem::entry()
 {
-  inst.write(memory.at(addr.read()));
+  assert(addr.read() % 4 == 0);
+  inst.write(memory[addr.read() / 4]);
 }

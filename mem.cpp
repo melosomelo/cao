@@ -58,9 +58,3 @@ sc_uint<32> mem::at(sc_uint<32> addr)
   assert(addr < size() && addr % 4 == 0);
   return memory[addr / 4];
 }
-
-int sc_main(int, char *[])
-{
-  mem memory;
-  memory.init_memory("test.txt");
-}

@@ -3,15 +3,15 @@
 
 #include <systemc.h>
 
-enum ALUOperation
+enum alu_op
 {
-  AND = 0,
-  OR,
-  XOR,
-  NOT,
-  ADD,
-  SUB,
-  LESS
+  and_op = 0,
+  or_op,
+  xor_op,
+  not_op,
+  add_op,
+  sub_op,
+  less_op
 };
 
 /**
@@ -29,17 +29,17 @@ enum ALUOperation
  *   - zero: signals if result equals to 0. used for conditional branching.
  */
 
-SC_MODULE(ALU)
+SC_MODULE(alu)
 {
   sc_in<sc_uint<32>> a;
   sc_in<sc_uint<32>> b;
-  sc_in<sc_uint<2>> op;
+  sc_in<sc_uint<3>> op;
   sc_out<sc_uint<32>> result;
   sc_out<bool> zero;
 
   void compute();
 
-  SC_CTOR(ALU)
+  SC_CTOR(alu)
   {
     SC_METHOD(compute);
     sensitive << a << b << op;

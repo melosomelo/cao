@@ -7,7 +7,7 @@ void reg::entry()
     val = 0;
     out.write(val);
   }
-  else if (clk.event() && clk && enable)
+  else if (clk.event() && clk)
   {
     val = in.read();
     out.write(val);

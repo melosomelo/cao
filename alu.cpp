@@ -1,45 +1,30 @@
 #include "alu.h"
 
-void ALU::compute()
+void alu::compute()
 {
-
   switch (op.read())
   {
-  case ALUOperation::AND:
+  case alu_op::and_op:
     result.write(a.read() & b.read());
     break;
-  case ALUOperation::OR:
+  case alu_op::or_op:
     result.write(a.read() | b.read());
     break;
-  case ALUOperation::XOR:
+  case alu_op::xor_op:
     result.write(a.read() ^ b.read());
     break;
-  case ALUOperation::NOT:
+  case alu_op::not_op:
     result.write(~a.read());
     break;
-  case ALUOperation::ADD:
+  case alu_op::add_op:
     result.write(a.read() + b.read());
     break;
-  case ALUOperation::SUB:
+  case alu_op::sub_op:
     result.write(a.read() - b.read());
     break;
-  case ALUOperation::LESS:
+  case alu_op::less_op:
     result.write(a.read() < b.read() ? 1 : 0);
     break;
   }
   zero.write(result.read() == 0);
-}
-
-int sc_main(int, char *[])
-{
-  sc_signal<sc_uint<32>> a, b, result;
-  sc_signal<sc_uint<2>> op;
-  sc_signal<bool> zero;
-
-  ALU alu("alu");
-  alu.a(a);
-  alu.b(b);
-  alu.result(result);
-  alu.op(op);
-  alu.zero(zero);
 }
