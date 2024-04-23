@@ -2,9 +2,6 @@
 
 void proc::init()
 {
-  const4.write(4);
-  add4_op.write(alu_op::add_op);
-
   pc_reg = new reg("pc_reg");
   pc_reg->in(pc4);
   pc_reg->reset(reset);

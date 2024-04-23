@@ -26,9 +26,9 @@ SC_MODULE(proc)
   // The value of the calculation of pc + 4 (address of the next sequential instruction)
   sc_signal<sc_uint<32>> pc4;
   // A constant signal with value of 4 that is used as the second parameter of the add4 module
-  sc_signal<sc_uint<32>> const4;
+  sc_signal<sc_uint<32>> const4{"const4", 4};
   // A constant signal that sets the add4 alu to be always used as an adder
-  sc_signal<sc_uint<3>> add4_op;
+  sc_signal<sc_uint<3>> add4_op{"add4_op", alu_op::add_op};
   // The signal that comes out of the instruction memory
   sc_signal<sc_uint<32>> current_inst;
   // A dummy signal for the zero output of the add4 alu. Not used but needs to be bound
