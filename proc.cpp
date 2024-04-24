@@ -17,7 +17,7 @@ void proc::init()
   pc_add4->b(const4);
   pc_add4->op(const_add_op);
   pc_add4->result(pc4);
-  pc_add4->zero(dummy_alu_zero);
+  pc_add4->zero(dummy_pc4_zero);
 
   dcode = new decode("dcode");
   dcode->instruction(current_inst);
@@ -35,7 +35,7 @@ void proc::init()
   rfile->read_reg1(rs);
   rfile->read_reg2(rt);
   rfile->write_reg(rd);
-  // todo: bind regfile data_in
+  rfile->data_in(rfile_data_in);
   rfile->data_out1(rfile_out1);
   rfile->data_out2(rfile_out2);
 
@@ -52,7 +52,7 @@ void proc::init()
   branch_alu->b(sl2_extended_offset);
   branch_alu->op(const_add_op);
   branch_alu->result(branch_alu_result);
-  branch_alu->zero(dummy_alu_zero);
+  branch_alu->zero(dummy_branch_alu_zero);
 
   pc_src_mux = new mux2<sc_uint<32>>("pc_src_mux");
   pc_src_mux->in0(pc4);
@@ -72,22 +72,25 @@ void proc::init()
   main_alu->op(ALUOp);
   main_alu->result(main_alu_result);
   main_alu->zero(main_alu_zero);
-  /*
 
-    datamem = new dmem("datamem");
+  datamem = new dmem("datamem");
+  datamem->addr(main_alu_result);
+  datamem->data_in(rfile_out2);
+  datamem->MemWrite(MemWrite);
+  datamem->MemRead(MemRead);
+  datamem->clk(clk);
+  datamem->data_out(dmem_out);
 
-
-
-  */
+  rfile_data_in_mux = new mux2<sc_uint<32>>("rfile_data_in_mux");
+  rfile_data_in_mux->in0(dmem_out);
+  rfile_data_in_mux->in1(main_alu_result);
+  rfile_data_in_mux->sel(MemtoReg);
+  rfile_data_in_mux->out(rfile_data_in);
 }
 
 void proc::dump_state()
 {
   std::ofstream outfile("processor.dump");
-
-  outfile << "pc: " << pc << endl;
-  outfile << "pc4: " << pc4 << endl;
-  outfile << "current_inst: 0x" << std::hex << current_inst.read() << std::dec << std::endl;
 
   outfile.close();
 }
