@@ -27,6 +27,10 @@ void proc::init()
   dcode->rd(rd);
   dcode->shamt(shamt);
   dcode->funct(funct);
+
+  rfile = new regfile("rfile");
+
+  main_alu = new alu("main_alu");
 }
 
 void proc::dump_state()

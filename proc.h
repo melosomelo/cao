@@ -26,6 +26,9 @@ SC_MODULE(proc)
   decode *dcode;
   // The register file. Holds 32 32-bit registers.
   regfile *rfile;
+  // The main ALU of the processor. Performs the arithmetic
+  // and logical operations of the instruction set.
+  alu *main_alu;
 
   // Signals.
   // These are the physical wires that connect different modules together
@@ -42,9 +45,12 @@ SC_MODULE(proc)
   // A dummy signal for the zero output of the add4 alu. Not used but needs to be bound
   // otherwise SystemC complains.
   sc_signal<bool> dummy_zero_add4;
-  // Instruction field signals
+  // Instruction field signals. They're explained in the decode.h file.
   sc_signal<sc_uint<6>> opcode, funct;
   sc_signal<sc_uint<5>> rs, rt, rd, shamt;
+  // Control signals. They're explained in more detail in the control.h file.
+  sc_signal<bool> RegWrite, MemWrite, MemRead;
+  sc_signal<sc_uint<3>> ALUOp;
 
   SC_CTOR(proc)
   {
