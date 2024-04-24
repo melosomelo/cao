@@ -24,6 +24,8 @@ SC_MODULE(decode)
   sc_out<sc_uint<5>> shamt;
   // Species the specific operation within the opcode category.
   sc_out<sc_uint<6>> funct;
+  // 16-bit offset for load/store instructions.
+  sc_out<sc_uint<16>> offset;
 
   SC_CTOR(decode)
   {
