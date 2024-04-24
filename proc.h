@@ -8,6 +8,8 @@
 #include "alu.h"
 #include "regfile.h"
 #include "decode.h"
+#include "extend.h"
+#include "shiftl2.h"
 
 SC_MODULE(proc)
 {
@@ -31,6 +33,12 @@ SC_MODULE(proc)
   // The main ALU of the processor. Performs the arithmetic
   // and logical operations of the instruction set.
   alu *main_alu;
+  // ALU used exclusively as an adder to calcute branch addresses.
+  alu *branch_alu;
+  // 32 bit sign-extender. Extends the 16-bit branch offset from
+  // load, stores and conditional branches into a 32-bit signal.
+  extend *extend32;
+  shiftl2 *sl2;
 
   // Signals.
   // These are the physical wires that connect different modules together

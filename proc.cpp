@@ -33,6 +33,12 @@ void proc::init()
   main_alu = new alu("main_alu");
 
   datamem = new dmem("datamem");
+
+  branch_alu = new alu("branch_alu");
+
+  extend32 = new extend("extend32");
+
+  sl2 = new shiftl2("sl2");
 }
 
 void proc::dump_state()
