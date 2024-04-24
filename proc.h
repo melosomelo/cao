@@ -44,6 +44,10 @@ SC_MODULE(proc)
   // Chooses between the output of branch_alu and pc4_add4 based on the PCSrc
   // control signal.
   mux2<sc_uint<32>> *pc_src_mux;
+  // Multiplexor that chooses the value of the second input parameter
+  // Chooses between the 2nd output of the register file and extended_offset
+  // signal (for arithmetic and load/store instructions, respectively).
+  mux2<sc_uint<32>> *main_alu_b_mux;
 
   // Signals.
   // These are the physical wires that connect different modules together
@@ -69,12 +73,15 @@ SC_MODULE(proc)
   // Result output of the branch alu.
   sc_signal<sc_uint<32>> branch_alu_result;
   sc_signal<sc_uint<32>> pc_src_mux_out;
+  sc_signal<sc_uint<32>> main_alu_b_mux_out;
+  sc_signal<sc_uint<32>> main_alu_result;
+  sc_signal<bool> main_alu_zero;
   // Instruction field signals. They're explained in the decode.h file.
   sc_signal<sc_uint<16>> offset;
   sc_signal<sc_uint<6>> opcode, funct;
   sc_signal<sc_uint<5>> rs, rt, rd, shamt;
   // Control signals. They're explained in more detail in the control.h file.
-  sc_signal<bool> RegWrite, MemWrite, MemRead, PCSrc;
+  sc_signal<bool> RegWrite, MemWrite, MemRead, PCSrc, ALUSrc;
   sc_signal<sc_uint<3>> ALUOp;
 
   SC_CTOR(proc)
