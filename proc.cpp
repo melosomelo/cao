@@ -54,13 +54,13 @@ void proc::init()
   branch_alu->result(branch_alu_result);
   branch_alu->zero(dummy_alu_zero);
 
-  pc_src_mux = new mux2<sc_uint<32>>();
+  pc_src_mux = new mux2<sc_uint<32>>("pc_src_mux");
   pc_src_mux->in0(pc4);
   pc_src_mux->in1(branch_alu_result);
   pc_src_mux->sel(PCSrc);
   pc_src_mux->out(pc_src_mux_out);
 
-  main_alu_b_mux = new mux2<sc_uint<32>>();
+  main_alu_b_mux = new mux2<sc_uint<32>>("main_alu_b_mux");
   main_alu_b_mux->in0(rfile_out2);
   main_alu_b_mux->in1(extended_offset);
   main_alu_b_mux->sel(ALUSrc);

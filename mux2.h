@@ -12,7 +12,7 @@ public:
   sc_in<bool> sel;
   sc_out<T> out;
 
-  SC_CTOR(mux)
+  SC_CTOR(mux2)
   {
     SC_METHOD(entry);
     sensitive << in0 << in1 << sel;
