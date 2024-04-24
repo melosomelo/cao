@@ -18,6 +18,15 @@ void proc::init()
   add4->op(add4_op);
   add4->result(pc4);
   add4->zero(dummy_zero_add4);
+
+  dcode = new decode("dcode");
+  dcode->instruction(current_inst);
+  dcode->opcode(opcode);
+  dcode->rs(rs);
+  dcode->rt(rt);
+  dcode->rd(rd);
+  dcode->shamt(shamt);
+  dcode->funct(funct);
 }
 
 void proc::dump_state()

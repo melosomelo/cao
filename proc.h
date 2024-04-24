@@ -5,6 +5,8 @@
 #include "reg.h"
 #include "imem.h"
 #include "alu.h"
+#include "regfile.h"
+#include "decode.h"
 
 SC_MODULE(proc)
 {
@@ -19,6 +21,11 @@ SC_MODULE(proc)
   // An ALU used exclusively as an adder. Calculates the address of the
   // next sequential instruction (PC + 4).
   alu *add4;
+  // Decoder module. Responsible for splitting up the instruction retrieved
+  // from the instruction memory and pass it along to other modules.
+  decode *dcode;
+  // The register file. Holds 32 32-bit registers.
+  regfile *rfile;
 
   // Signals.
   // These are the physical wires that connect different modules together
@@ -35,6 +42,9 @@ SC_MODULE(proc)
   // A dummy signal for the zero output of the add4 alu. Not used but needs to be bound
   // otherwise SystemC complains.
   sc_signal<bool> dummy_zero_add4;
+  // Instruction field signals
+  sc_signal<sc_uint<6>> opcode, funct;
+  sc_signal<sc_uint<5>> rs, rt, rd, shamt;
 
   SC_CTOR(proc)
   {
