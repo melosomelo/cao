@@ -17,7 +17,7 @@ public:
   /** Data to be written into specified register */
   sc_in<sc_uint<32>> data_in;
   /** Control signal to enable writing to the register file */
-  sc_in<bool> write;
+  sc_in<bool> RegWrite;
   /** Clock signal */
   sc_in<bool> clk;
 

@@ -10,6 +10,7 @@
 #include "decode.h"
 #include "extend.h"
 #include "shiftl2.h"
+#include "mux2.h"
 
 SC_MODULE(proc)
 {
@@ -23,7 +24,7 @@ SC_MODULE(proc)
   imem *inst_mem;
   // An ALU used exclusively as an adder. Calculates the address of the
   // next sequential instruction (PC + 4).
-  alu *add4;
+  alu *pc_add4;
   // Decoder module. Responsible for splitting up the instruction retrieved
   // from the instruction memory and pass it along to other modules.
   decode *dcode;
@@ -39,6 +40,10 @@ SC_MODULE(proc)
   // load, stores and conditional branches into a 32-bit signal.
   extend *extend32;
   shiftl2 *sl2;
+  // Multiplexor that chooses the values that goes into the PC.
+  // Chooses between the output of branch_alu and pc4_add4 based on the PCSrc
+  // control signal.
+  mux2<sc_uint<32>> *pc_src_mux;
 
   // Signals.
   // These are the physical wires that connect different modules together
@@ -46,20 +51,30 @@ SC_MODULE(proc)
   sc_signal<sc_uint<32>> pc;
   // The value of the calculation of pc + 4 (address of the next sequential instruction)
   sc_signal<sc_uint<32>> pc4;
-  // A constant signal with value of 4 that is used as the second parameter of the add4 module
+  // A constant signal with value of 4 that is used as the second parameter of the pc_add4 module
   sc_signal<sc_uint<32>> const4{"const4", 4};
-  // A constant signal that sets the add4 alu to be always used as an adder
-  sc_signal<sc_uint<3>> add4_op{"add4_op", alu_op::add_op};
+  // A constant signal that makes some ALUs be used exclusively as adders.
+  sc_signal<sc_uint<3>> const_add_op{"add_op_sig", alu_op::add_op};
   // The signal that comes out of the instruction memory
   sc_signal<sc_uint<32>> current_inst;
-  // A dummy signal for the zero output of the add4 alu. Not used but needs to be bound
-  // otherwise SystemC complains.
-  sc_signal<bool> dummy_zero_add4;
+  // A dummy signal to capture the zero output of ALUs used exclusively as adders.
+  // Not used but needs to be bound otherwise SystemC complains.
+  sc_signal<bool> dummy_alu_zero;
+  // Signals that come out of the register file;
+  sc_signal<sc_uint<32>> rfile_out1, rfile_out2;
+  // 32-bit sign-extended instruction offset field
+  sc_signal<sc_uint<32>> extended_offset;
+  // 2-bit shifted left version of the extend_offset signal.
+  sc_signal<sc_uint<32>> sl2_extended_offset;
+  // Result output of the branch alu.
+  sc_signal<sc_uint<32>> branch_alu_result;
+  sc_signal<sc_uint<32>> pc_src_mux_out;
   // Instruction field signals. They're explained in the decode.h file.
+  sc_signal<sc_uint<16>> offset;
   sc_signal<sc_uint<6>> opcode, funct;
   sc_signal<sc_uint<5>> rs, rt, rd, shamt;
   // Control signals. They're explained in more detail in the control.h file.
-  sc_signal<bool> RegWrite, MemWrite, MemRead;
+  sc_signal<bool> RegWrite, MemWrite, MemRead, PCSrc;
   sc_signal<sc_uint<3>> ALUOp;
 
   SC_CTOR(proc)

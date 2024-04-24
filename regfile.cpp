@@ -3,7 +3,7 @@
 void regfile::access()
 {
   // Write to the register file.
-  if (clk.event() && clk.read() && write.read())
+  if (clk.event() && clk.read() && RegWrite.read())
   {
     memory[write_reg.read()] = data_in.read();
     return;
