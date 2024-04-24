@@ -3,6 +3,7 @@
 
 #include <systemc.h>
 #include "reg.h"
+#include "dmem.h"
 #include "imem.h"
 #include "alu.h"
 #include "regfile.h"
@@ -26,6 +27,7 @@ SC_MODULE(proc)
   decode *dcode;
   // The register file. Holds 32 32-bit registers.
   regfile *rfile;
+  dmem *datamem;
   // The main ALU of the processor. Performs the arithmetic
   // and logical operations of the instruction set.
   alu *main_alu;

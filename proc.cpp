@@ -31,6 +31,8 @@ void proc::init()
   rfile = new regfile("rfile");
 
   main_alu = new alu("main_alu");
+
+  datamem = new dmem("datamem");
 }
 
 void proc::dump_state()
