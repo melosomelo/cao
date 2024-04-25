@@ -101,13 +101,6 @@ void proc::init()
   ctrl->ALUOp(ALUOp);
 }
 
-void proc::dump_state()
-{
-  std::ofstream outfile("processor.dump");
-
-  outfile.close();
-}
-
 proc::~proc()
 {
   delete pc_reg;
@@ -136,21 +129,27 @@ int sc_main(int argc, char *argv[])
   proc.clk(clk);
   proc.reset(reset);
 
-  // Simulation time variables
-  sc_time sim_time = SC_ZERO_TIME;
-  sc_time cycle_time = sc_time(1, SC_NS);
+  proc.load_instruction_memory(std::vector<sc_uint<32>>{
+      0x014B4820, // add $t1 $t2 $t3
+  });
 
-  // Simulate for 10 cycles
-  for (int i = 0; i < 1; ++i)
-  {
-    // Wait for 1 second
-    sc_start(cycle_time);
-
-    // Update simulation time
-    sim_time += cycle_time;
-  }
-
-  proc.dump_state();
+  sc_start(1, SC_NS);
 
   return 0;
+}
+
+void proc::load_instruction_memory(std::vector<sc_uint<32>> instructions)
+{
+  for (auto i : instructions)
+  {
+    this->inst_mem->memory.push_back(i);
+  }
+}
+
+void proc::load_data_memory(std::vector<sc_uint<32>> data)
+{
+  for (auto v : data)
+  {
+    this->datamem->memory.push_back(v);
+  }
 }

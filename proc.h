@@ -113,8 +113,8 @@ SC_MODULE(proc)
   /** Initializes the components of the architecture */
   void init();
 
-  // Debug method.
-  void dump_state();
+  void load_instruction_memory(std::vector<sc_uint<32>>);
+  void load_data_memory(std::vector<sc_uint<32>>);
 };
 
 #endif

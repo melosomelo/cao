@@ -20,7 +20,7 @@ public:
     sensitive << addr << MemRead;
     SC_METHOD(write);
     sensitive << clk.pos();
-    init_memory("datamem.dat");
+    // init_memory("datamem.dat");
   }
 
   void read();

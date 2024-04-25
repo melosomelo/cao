@@ -20,7 +20,7 @@ public:
   {
     SC_METHOD(entry);
     sensitive << addr;
-    init_memory("instmem.hex");
+    // init_memory("instmem.hex");
   }
 
   void entry();

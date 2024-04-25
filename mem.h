@@ -23,7 +23,6 @@ public:
   /** Returns the word that starts at address addr. **/
   sc_uint<32> at(sc_uint<32> addr);
 
-protected:
   vector<sc_uint<32>> memory;
 };
 
