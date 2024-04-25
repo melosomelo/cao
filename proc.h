@@ -55,6 +55,10 @@ SC_MODULE(proc)
   // the register file. Chooses between the value read from the
   // data memory and the main alu result (for arithmetic operations).
   mux2<sc_uint<32>> *rfile_data_in_mux;
+  // Multiplexor that chooses the value that specifies the number
+  // of the register that will be written to. Chooses between the rt and rd
+  // instruction fields, for R-format and lw instructions respectively.
+  mux2<sc_uint<5>> *write_reg_mux;
 
   // Control unit. Responsible for setting the control lines that control the individual components
   // based on the chosen instruction.
@@ -94,6 +98,7 @@ SC_MODULE(proc)
   sc_signal<sc_uint<32>> main_alu_result;
   // Signal coming out of data memory
   sc_signal<sc_uint<32>> dmem_out;
+  sc_signal<sc_uint<5>> write_reg_mux_out;
   sc_signal<bool> main_alu_zero;
   // Instruction field signals. They're explained in the decode.h file.
   sc_signal<sc_uint<16>> offset;
@@ -115,6 +120,7 @@ SC_MODULE(proc)
 
   void load_instruction_memory(std::vector<sc_uint<32>>);
   void load_data_memory(std::vector<sc_uint<32>>);
+  void dump_state();
 };
 
 #endif

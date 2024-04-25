@@ -34,7 +34,7 @@ void proc::init()
   rfile->RegWrite(RegWrite);
   rfile->read_reg1(rs);
   rfile->read_reg2(rt);
-  rfile->write_reg(rd);
+  rfile->write_reg(write_reg_mux_out);
   rfile->data_in(rfile_data_in);
   rfile->data_out1(rfile_out1);
   rfile->data_out2(rfile_out2);
@@ -82,10 +82,16 @@ void proc::init()
   datamem->data_out(dmem_out);
 
   rfile_data_in_mux = new mux2<sc_uint<32>>("rfile_data_in_mux");
-  rfile_data_in_mux->in0(dmem_out);
-  rfile_data_in_mux->in1(main_alu_result);
+  rfile_data_in_mux->in0(main_alu_result);
+  rfile_data_in_mux->in1(dmem_out);
   rfile_data_in_mux->sel(MemtoReg);
   rfile_data_in_mux->out(rfile_data_in);
+
+  write_reg_mux = new mux2<sc_uint<5>>("write_reg_mux");
+  write_reg_mux->in0(rt);
+  write_reg_mux->in1(rd);
+  write_reg_mux->sel(RegDst);
+  write_reg_mux->out(write_reg_mux_out);
 
   ctrl = new control("ctrl");
   ctrl->opcode(opcode);
@@ -138,21 +144,29 @@ int sc_main(int argc, char *argv[])
   proc.load_instruction_memory(std::vector<sc_uint<32>>{
       0xad090000, // sw $t1,0($t0)
       0xad0a0004, // sw $t2,4(t$0)
-      0xad0b0008  // sw $t3,8(t$0)
+      0xad0b0008, // sw $t3,8(t$0)
+      0x8d0c0008  // lw $t4,8($t0)
   });
 
   proc.load_data_memory(std::vector<sc_uint<32>>{
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0});
 
   // Run simulation for 10 clock cycles
-  for (int i = 0; i < 10; ++i)
+  for (int i = 0; i < 5; ++i)
   {
     sc_start(1, SC_NS);
   }
 
-  std::cout << proc.datamem->memory[0] << std::endl;
-  std::cout << proc.datamem->memory[1] << std::endl;
-  std::cout << proc.datamem->memory[2] << std::endl;
+  std::cout << "rs: " << proc.rs << std::endl;
+  std::cout << "rt: " << proc.rt << std::endl;
+  std::cout << "rd: " << proc.rd << std::endl;
+  for (auto x : proc.rfile->memory)
+  {
+    std::cout << x << " ";
+  }
+  std::cout << std::endl;
+
+  proc.dump_state();
 
   return 0;
 }
@@ -171,4 +185,34 @@ void proc::load_data_memory(std::vector<sc_uint<32>> data)
   {
     this->datamem->memory.push_back(v);
   }
+}
+
+void proc::dump_state()
+{
+  std::ofstream outfile("processor.dump");
+
+  outfile << "SIGNALS:\n";
+  outfile << "pc: " << this->pc << std::endl;
+  outfile << "current instruction: " << std::hex << this->current_inst << std::dec << std::endl;
+  outfile << "rfile out 1: " << this->rfile_out1 << std::endl;
+  outfile << "rfile out 2: " << this->rfile_out2 << std::endl;
+  outfile << "write_reg_mux_Out: " << this->write_reg_mux_out << std::endl;
+  outfile << "rfile_data_in: " << this->rfile_data_in << std::endl;
+  outfile << "extended_offset: " << this->extended_offset << std::endl;
+  outfile << "branch_alu_result: " << this->branch_alu_result << std::endl;
+  outfile << "pc_src_mux_out: " << this->pc_src_mux_out << std::endl;
+  outfile << "main_alu_b_mux_out: " << this->main_alu_b_mux_out << std::endl;
+  outfile << "main_alu_result: " << this->main_alu_result << std::endl;
+  outfile << "dmem_out: " << this->dmem_out << std::endl;
+  outfile << "RegDst: " << RegDst << std::endl;
+  outfile << "Branch: " << Branch << std::endl;
+  outfile << "RegWrite: " << RegWrite << std::endl;
+  outfile << "MemWrite: " << MemWrite << std::endl;
+  outfile << "MemRead: " << MemRead << std::endl;
+  outfile << "PCSrc: " << PCSrc << std::endl;
+  outfile << "ALUSrc: " << ALUSrc << std::endl;
+  outfile << "MemToReg: " << MemtoReg << std::endl;
+  outfile << "ALUOp: " << ALUOp << std::endl;
+
+  outfile.close();
 }
