@@ -129,11 +129,30 @@ int sc_main(int argc, char *argv[])
   proc.clk(clk);
   proc.reset(reset);
 
+  // Manually setting the contents of the register (for now)
+  proc.rfile->memory[reg_num::$t0] = 0;
+  proc.rfile->memory[reg_num::$t1] = 10;
+  proc.rfile->memory[reg_num::$t2] = 20;
+  proc.rfile->memory[reg_num::$t3] = 30;
+
   proc.load_instruction_memory(std::vector<sc_uint<32>>{
-      0x014B4820, // add $t1 $t2 $t3
+      0xad090000, // sw $t1,0($t0)
+      0xad0a0004, // sw $t2,4(t$0)
+      0xad0b0008  // sw $t3,8(t$0)
   });
 
-  sc_start(1, SC_NS);
+  proc.load_data_memory(std::vector<sc_uint<32>>{
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0});
+
+  // Run simulation for 10 clock cycles
+  for (int i = 0; i < 10; ++i)
+  {
+    sc_start(1, SC_NS);
+  }
+
+  std::cout << proc.datamem->memory[0] << std::endl;
+  std::cout << proc.datamem->memory[1] << std::endl;
+  std::cout << proc.datamem->memory[2] << std::endl;
 
   return 0;
 }
