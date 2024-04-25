@@ -86,6 +86,19 @@ void proc::init()
   rfile_data_in_mux->in1(main_alu_result);
   rfile_data_in_mux->sel(MemtoReg);
   rfile_data_in_mux->out(rfile_data_in);
+
+  ctrl = new control("ctrl");
+  ctrl->opcode(opcode);
+  ctrl->funct(funct);
+  ctrl->RegDst(RegDst);
+  ctrl->Branch(Branch);
+  ctrl->RegWrite(RegWrite);
+  ctrl->MemWrite(MemWrite);
+  ctrl->MemRead(MemRead);
+  ctrl->PCSrc(PCSrc);
+  ctrl->ALUSrc(ALUSrc);
+  ctrl->MemtoReg(MemtoReg);
+  ctrl->ALUOp(ALUOp);
 }
 
 void proc::dump_state()

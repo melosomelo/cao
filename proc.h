@@ -11,6 +11,7 @@
 #include "extend.h"
 #include "shiftl2.h"
 #include "mux2.h"
+#include "control.h"
 
 SC_MODULE(proc)
 {
@@ -55,6 +56,10 @@ SC_MODULE(proc)
   // data memory and the main alu result (for arithmetic operations).
   mux2<sc_uint<32>> *rfile_data_in_mux;
 
+  // Control unit. Responsible for setting the control lines that control the individual components
+  // based on the chosen instruction.
+  control *ctrl;
+
   // Signals.
   // These are the physical wires that connect different modules together
 
@@ -95,7 +100,7 @@ SC_MODULE(proc)
   sc_signal<sc_uint<6>> opcode, funct;
   sc_signal<sc_uint<5>> rs, rt, rd, shamt;
   // Control signals. They're explained in more detail in the control.h file.
-  sc_signal<bool> RegWrite, MemWrite, MemRead, PCSrc, ALUSrc, MemtoReg;
+  sc_signal<bool> RegDst, Branch, RegWrite, MemWrite, MemRead, PCSrc, ALUSrc, MemtoReg;
   sc_signal<sc_uint<3>> ALUOp;
 
   SC_CTOR(proc)
