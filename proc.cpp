@@ -145,26 +145,22 @@ int sc_main(int argc, char *argv[])
       0xad090000, // sw $t1,0($t0)
       0xad0a0004, // sw $t2,4(t$0)
       0xad0b0008, // sw $t3,8(t$0)
-      0x8d0c0008  // lw $t4,8($t0)
+      0x8d0c0008, // lw $t4,8($t0)
+      0x01296820, // add $t5,$t1,$t1
+      0x01697022, // sub $t6,$t3,$t1
+      0x01697824, // and $t7,$t3,$t1
+      0x01498025, // or $s0,$t2,$t1
+      0x012a882a, // slt $s1,$t1,$t2
   });
 
   proc.load_data_memory(std::vector<sc_uint<32>>{
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0});
 
   // Run simulation for 10 clock cycles
-  for (int i = 0; i < 5; ++i)
+  for (int i = 0; i < 10; ++i)
   {
     sc_start(1, SC_NS);
   }
-
-  std::cout << "rs: " << proc.rs << std::endl;
-  std::cout << "rt: " << proc.rt << std::endl;
-  std::cout << "rd: " << proc.rd << std::endl;
-  for (auto x : proc.rfile->memory)
-  {
-    std::cout << x << " ";
-  }
-  std::cout << std::endl;
 
   proc.dump_state();
 
@@ -196,7 +192,7 @@ void proc::dump_state()
   outfile << "current instruction: " << std::hex << this->current_inst << std::dec << std::endl;
   outfile << "rfile out 1: " << this->rfile_out1 << std::endl;
   outfile << "rfile out 2: " << this->rfile_out2 << std::endl;
-  outfile << "write_reg_mux_Out: " << this->write_reg_mux_out << std::endl;
+  outfile << "write_reg_mux_out: " << this->write_reg_mux_out << std::endl;
   outfile << "rfile_data_in: " << this->rfile_data_in << std::endl;
   outfile << "extended_offset: " << this->extended_offset << std::endl;
   outfile << "branch_alu_result: " << this->branch_alu_result << std::endl;
@@ -213,6 +209,18 @@ void proc::dump_state()
   outfile << "ALUSrc: " << ALUSrc << std::endl;
   outfile << "MemToReg: " << MemtoReg << std::endl;
   outfile << "ALUOp: " << ALUOp << std::endl;
+
+  outfile << "\nREGISTERS:\n";
+  for (int i = 0; i < rfile->memory.size(); i++)
+  {
+    outfile << "R" << i << ": " << rfile->memory[i] << std::endl;
+  }
+
+  outfile << "\nDATA MEMORY:\n";
+  for (int i = 0; i < datamem->memory.size(); i++)
+  {
+    outfile << i << ": " << datamem->memory[i] << std::endl;
+  }
 
   outfile.close();
 }
