@@ -13,4 +13,4 @@ g++ \
   -L /usr/lib \
   -Wl,-rpath=/usr/lib \
   -lsystemc -lm \
-  mem.cpp extend.cpp decode.cpp reg.cpp regfile.cpp alu.cpp imem.cpp dmem.cpp shiftl2.cpp control.cpp proc.cpp
+  mem.cpp andgate.cpp extend.cpp decode.cpp reg.cpp regfile.cpp alu.cpp imem.cpp dmem.cpp shiftl2.cpp control.cpp proc.cpp

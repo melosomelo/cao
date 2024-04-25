@@ -12,6 +12,7 @@
 #include "shiftl2.h"
 #include "mux2.h"
 #include "control.h"
+#include "andgate.h"
 
 SC_MODULE(proc)
 {
