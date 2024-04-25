@@ -108,6 +108,8 @@ SC_MODULE(proc)
     init();
   };
 
+  ~proc();
+
   /** Initializes the components of the architecture */
   void init();
 

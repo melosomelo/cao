@@ -108,6 +108,24 @@ void proc::dump_state()
   outfile.close();
 }
 
+proc::~proc()
+{
+  delete pc_reg;
+  delete inst_mem;
+  delete pc_add4;
+  delete dcode;
+  delete rfile;
+  delete datamem;
+  delete main_alu;
+  delete branch_alu;
+  delete extend32;
+  delete sl2;
+  delete pc_src_mux;
+  delete main_alu_b_mux;
+  delete rfile_data_in_mux;
+  delete ctrl;
+}
+
 int sc_main(int argc, char *argv[])
 {
   sc_clock clk("clk", 1, SC_NS);
