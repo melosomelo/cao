@@ -45,10 +45,9 @@ SC_MODULE(proc)
   // load, stores and conditional branches into a 32-bit signal.
   extend *extend32;
   shiftl2 *sl2;
-  // Multiplexor that chooses the values that goes into the PC.
-  // Chooses between the output of branch_alu and pc4_add4 based on the PCSrc
-  // control signal.
-  mux2<sc_uint<32>> *pc_src_mux;
+  // Multiplexor that chooses between the next sequenital instruciton
+  // and the instruction specified by the beq instruction.
+  mux2<sc_uint<32>> *branch_alu_pc4_mux;
   // Multiplexor that chooses the value of the second input parameter
   // Chooses between the 2nd output of the register file and extended_offset
   // signal (for arithmetic and load/store instructions, respectively).
@@ -68,6 +67,9 @@ SC_MODULE(proc)
   // and the zero output of the main ALU. Used to determine if the branch should be taken.
   andgate *Branch_and_main_alu_zero;
   jcalc *j_calc;
+  // Mutiplexor that chooses between the signal returned by the branch_alu_pc4_mux
+  // and jump address taken from the jump instruction. Its output value goes into the PC.
+  mux2<sc_uint<32>> *pc_src_mux;
 
   // Signals.
   // These are the physical wires that connect different modules together
@@ -96,7 +98,7 @@ SC_MODULE(proc)
   sc_signal<sc_uint<32>> sl2_extended_offset;
   // Result output of the branch alu.
   sc_signal<sc_uint<32>> branch_alu_result;
-  sc_signal<sc_uint<32>> pc_src_mux_out;
+  sc_signal<sc_uint<32>> branch_alu_pc4_mux_out;
   // Signal coming out of main_alu_b_mux module
   sc_signal<sc_uint<32>> main_alu_b_mux_out;
   // Signal coming out of the main ALU
@@ -108,6 +110,7 @@ SC_MODULE(proc)
   sc_signal<bool> take_branch;
   sc_signal<bool> main_alu_zero;
   sc_signal<sc_uint<32>> jumpaddr32;
+  sc_signal<sc_uint<32>> pc_src_mux_out;
   // Instruction field signals. They're explained in the decode.h file.
   sc_signal<sc_uint<26>> jumpaddr26;
   sc_signal<sc_uint<16>> offset;

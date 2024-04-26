@@ -55,11 +55,11 @@ void proc::init()
   branch_alu->result(branch_alu_result);
   branch_alu->zero(dummy_branch_alu_zero);
 
-  pc_src_mux = new mux2<sc_uint<32>>("pc_src_mux");
-  pc_src_mux->in0(pc4);
-  pc_src_mux->in1(branch_alu_result);
-  pc_src_mux->sel(take_branch);
-  pc_src_mux->out(pc_src_mux_out);
+  branch_alu_pc4_mux = new mux2<sc_uint<32>>("branch_alu_pc4_mux");
+  branch_alu_pc4_mux->in0(pc4);
+  branch_alu_pc4_mux->in1(branch_alu_result);
+  branch_alu_pc4_mux->sel(take_branch);
+  branch_alu_pc4_mux->out(branch_alu_pc4_mux_out);
 
   main_alu_b_mux = new mux2<sc_uint<32>>("main_alu_b_mux");
   main_alu_b_mux->in0(rfile_out2);
@@ -116,6 +116,12 @@ void proc::init()
   j_calc->jumpaddr26(jumpaddr26);
   j_calc->pc4(pc4);
   j_calc->result(jumpaddr32);
+
+  pc_src_mux = new mux2<sc_uint<32>>("pc_src_mux");
+  pc_src_mux->in0(branch_alu_pc4_mux_out);
+  pc_src_mux->in1(jumpaddr32);
+  pc_src_mux->sel(Jump);
+  pc_src_mux->out(pc_src_mux_out);
 }
 
 proc::~proc()
@@ -130,7 +136,7 @@ proc::~proc()
   delete branch_alu;
   delete extend32;
   delete sl2;
-  delete pc_src_mux;
+  delete branch_alu_pc4_mux;
   delete main_alu_b_mux;
   delete rfile_data_in_mux;
   delete ctrl;
@@ -207,7 +213,7 @@ void proc::dump_state()
   outfile << "rfile_data_in: " << this->rfile_data_in << std::endl;
   outfile << "extended_offset: " << this->extended_offset << std::endl;
   outfile << "branch_alu_result: " << this->branch_alu_result << std::endl;
-  outfile << "pc_src_mux_out: " << this->pc_src_mux_out << std::endl;
+  outfile << "branch_alu_pc4_mux_out: " << this->branch_alu_pc4_mux_out << std::endl;
   outfile << "main_alu_b_mux_out: " << this->main_alu_b_mux_out << std::endl;
   outfile << "main_alu_result: " << this->main_alu_result << std::endl;
   outfile << "dmem_out: " << this->dmem_out << std::endl;
