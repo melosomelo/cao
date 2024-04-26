@@ -26,6 +26,8 @@ SC_MODULE(decode)
   sc_out<sc_uint<6>> funct;
   // 16-bit offset for load/store instructions.
   sc_out<sc_uint<16>> offset;
+  // The unconditional jump address.
+  sc_out<sc_uint<26>> jumpaddr26;
 
   SC_CTOR(decode)
   {

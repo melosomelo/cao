@@ -24,6 +24,8 @@ SC_MODULE(control)
   // Signals that instruction is a branch. Used in conjutction with the
   // zero output from the main ALU to determine if the branch should be taken or not.
   sc_out<bool> Branch;
+  // Signals that instruction is a jump.
+  sc_out<bool> Jump;
   // Enables writing of the register file.
   sc_out<bool> RegWrite;
   // Enables writing of the data memory.

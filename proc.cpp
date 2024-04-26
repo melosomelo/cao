@@ -28,6 +28,7 @@ void proc::init()
   dcode->shamt(shamt);
   dcode->funct(funct);
   dcode->offset(offset);
+  dcode->jumpaddr26(jumpaddr26);
 
   rfile = new regfile("rfile");
   rfile->clk(clk);
@@ -104,11 +105,17 @@ void proc::init()
   ctrl->ALUSrc(ALUSrc);
   ctrl->MemtoReg(MemtoReg);
   ctrl->ALUOp(ALUOp);
+  ctrl->Jump(Jump);
 
   Branch_and_main_alu_zero = new andgate("Branch_and_main_alu_zero");
   Branch_and_main_alu_zero->in1(Branch);
   Branch_and_main_alu_zero->in2(main_alu_zero);
   Branch_and_main_alu_zero->out(take_branch);
+
+  j_calc = new jcalc("j_calc");
+  j_calc->jumpaddr26(jumpaddr26);
+  j_calc->pc4(pc4);
+  j_calc->result(jumpaddr32);
 }
 
 proc::~proc()

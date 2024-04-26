@@ -13,6 +13,7 @@
 #include "mux2.h"
 #include "control.h"
 #include "andgate.h"
+#include "jcalc.h"
 
 SC_MODULE(proc)
 {
@@ -66,6 +67,7 @@ SC_MODULE(proc)
   // AND gate that outputs the result of the AND operation between the Branch control signal
   // and the zero output of the main ALU. Used to determine if the branch should be taken.
   andgate *Branch_and_main_alu_zero;
+  jcalc *j_calc;
 
   // Signals.
   // These are the physical wires that connect different modules together
@@ -105,12 +107,14 @@ SC_MODULE(proc)
   // Signal that determines if the branch should be taken.
   sc_signal<bool> take_branch;
   sc_signal<bool> main_alu_zero;
+  sc_signal<sc_uint<32>> jumpaddr32;
   // Instruction field signals. They're explained in the decode.h file.
+  sc_signal<sc_uint<26>> jumpaddr26;
   sc_signal<sc_uint<16>> offset;
   sc_signal<sc_uint<6>> opcode, funct;
   sc_signal<sc_uint<5>> rs, rt, rd, shamt;
   // Control signals. They're explained in more detail in the control.h file.
-  sc_signal<bool> RegDst, Branch, RegWrite, MemWrite, MemRead, ALUSrc, MemtoReg;
+  sc_signal<bool> RegDst, Branch, RegWrite, MemWrite, MemRead, ALUSrc, MemtoReg, Jump;
   sc_signal<sc_uint<3>> ALUOp;
 
   SC_CTOR(proc)

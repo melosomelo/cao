@@ -12,4 +12,5 @@ void decode::entry()
   shamt.write(temp_inst.range(10, 6));
   funct.write(temp_inst.range(5, 0));
   offset.write(temp_inst.range(15, 0));
+  jumpaddr26.write(temp_inst.range(25, 0));
 }
