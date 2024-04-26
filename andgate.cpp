@@ -2,5 +2,5 @@
 
 void andgate::entry()
 {
-  dout.write(din1.read() && din2.read());
+  out.write(in1.read() && in2.read());
 }

@@ -33,7 +33,7 @@ void control::entry()
       break;
     }
     break;
-  case 5: // beq (branch on equal)
+  case 4: // beq (branch on equal)
     ALUSrc.write(0);
     RegWrite.write(0);
     MemRead.write(0);

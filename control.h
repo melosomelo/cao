@@ -31,10 +31,6 @@ SC_MODULE(control)
   // Enables reading of the data memory.
   sc_out<bool> MemRead;
   // Selector signal for the multiplexor that chooses
-  // between the next address of the next sequential instruction
-  // or the branch instruction for the value of the PC
-  sc_out<bool> PCSrc;
-  // Selector signal for the multiplexor that chooses
   // between the second output from the register file
   // and sign-extended 16-bit offset for the
   // second parameter of the main ALU.

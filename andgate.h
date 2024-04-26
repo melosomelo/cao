@@ -6,14 +6,14 @@
 SC_MODULE(andgate)
 {
 
-  sc_in<bool> din1;
-  sc_in<bool> din2;
-  sc_out<bool> dout;
+  sc_in<bool> in1;
+  sc_in<bool> in2;
+  sc_out<bool> out;
 
   SC_CTOR(andgate)
   {
     SC_METHOD(entry);
-    sensitive << din1 << din2;
+    sensitive << in1 << in2;
   }
 
   void entry();

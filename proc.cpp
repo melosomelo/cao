@@ -57,7 +57,7 @@ void proc::init()
   pc_src_mux = new mux2<sc_uint<32>>("pc_src_mux");
   pc_src_mux->in0(pc4);
   pc_src_mux->in1(branch_alu_result);
-  pc_src_mux->sel(PCSrc);
+  pc_src_mux->sel(take_branch);
   pc_src_mux->out(pc_src_mux_out);
 
   main_alu_b_mux = new mux2<sc_uint<32>>("main_alu_b_mux");
@@ -101,10 +101,14 @@ void proc::init()
   ctrl->RegWrite(RegWrite);
   ctrl->MemWrite(MemWrite);
   ctrl->MemRead(MemRead);
-  ctrl->PCSrc(PCSrc);
   ctrl->ALUSrc(ALUSrc);
   ctrl->MemtoReg(MemtoReg);
   ctrl->ALUOp(ALUOp);
+
+  Branch_and_main_alu_zero = new andgate("Branch_and_main_alu_zero");
+  Branch_and_main_alu_zero->in1(Branch);
+  Branch_and_main_alu_zero->in2(main_alu_zero);
+  Branch_and_main_alu_zero->out(take_branch);
 }
 
 proc::~proc()
@@ -151,12 +155,12 @@ int sc_main(int argc, char *argv[])
       0x01697824, // and $t7,$t3,$t1
       0x01498025, // or $s0,$t2,$t1
       0x012a882a, // slt $s1,$t1,$t2
+      0x11290000, // beq $t1,$t1,0
   });
 
   proc.load_data_memory(std::vector<sc_uint<32>>{
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0});
 
-  // Run simulation for 10 clock cycles
   for (int i = 0; i < 10; ++i)
   {
     sc_start(1, SC_NS);
@@ -200,12 +204,13 @@ void proc::dump_state()
   outfile << "main_alu_b_mux_out: " << this->main_alu_b_mux_out << std::endl;
   outfile << "main_alu_result: " << this->main_alu_result << std::endl;
   outfile << "dmem_out: " << this->dmem_out << std::endl;
+  outfile << "main_alu_zero: " << main_alu_zero << std::endl;
+  outfile << "take_branch: " << take_branch << std::endl;
   outfile << "RegDst: " << RegDst << std::endl;
   outfile << "Branch: " << Branch << std::endl;
   outfile << "RegWrite: " << RegWrite << std::endl;
   outfile << "MemWrite: " << MemWrite << std::endl;
   outfile << "MemRead: " << MemRead << std::endl;
-  outfile << "PCSrc: " << PCSrc << std::endl;
   outfile << "ALUSrc: " << ALUSrc << std::endl;
   outfile << "MemToReg: " << MemtoReg << std::endl;
   outfile << "ALUOp: " << ALUOp << std::endl;
