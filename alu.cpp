@@ -27,5 +27,6 @@ void alu::compute()
     temp_result = a.read() < b.read() ? 1 : 0;
     break;
   }
-  zero.write(result.read() == 0);
+  result.write(temp_result);
+  zero.write(temp_result == 0);
 }

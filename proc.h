@@ -66,11 +66,6 @@ SC_MODULE(proc)
   // AND gate that outputs the result of the AND operation between the Branch control signal
   // and the zero output of the main ALU. Used to determine if the branch should be taken.
   andgate *Branch_and_main_alu_zero;
-  jcalc *j_calc;
-  // Mutiplexor that chooses between the signal returned by the branch_alu_pc4_mux
-  // and jump address taken from the jump instruction. Its output value goes into the PC.
-  mux2<sc_uint<32>> *pc_src_mux;
-
   // Signals.
   // These are the physical wires that connect different modules together
 
@@ -110,7 +105,6 @@ SC_MODULE(proc)
   sc_signal<bool> take_branch;
   sc_signal<bool> main_alu_zero;
   sc_signal<sc_uint<32>> jumpaddr32;
-  sc_signal<sc_uint<32>> pc_src_mux_out;
   // Instruction field signals. They're explained in the decode.h file.
   sc_signal<sc_uint<26>> jumpaddr26;
   sc_signal<sc_uint<16>> offset;
