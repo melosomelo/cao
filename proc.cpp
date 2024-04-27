@@ -3,7 +3,7 @@
 void proc::init()
 {
   pc_reg = new reg("pc_reg");
-  pc_reg->in(branch_alu_pc4_mux_out);
+  pc_reg->in(pc_src_mux_out);
   pc_reg->reset(reset);
   pc_reg->clk(clk);
   pc_reg->out(pc);
@@ -111,6 +111,17 @@ void proc::init()
   Branch_and_main_alu_zero->in1(Branch);
   Branch_and_main_alu_zero->in2(main_alu_zero);
   Branch_and_main_alu_zero->out(take_branch);
+
+  j_calc = new jcalc("j_calc");
+  j_calc->jumpaddr26(jumpaddr26);
+  j_calc->pc4(pc4);
+  j_calc->result(jumpaddr32);
+
+  pc_src_mux = new mux2<sc_uint<32>>("pc_src_mux");
+  pc_src_mux->in0(branch_alu_pc4_mux_out);
+  pc_src_mux->in1(jumpaddr32);
+  pc_src_mux->sel(Jump);
+  pc_src_mux->out(pc_src_mux_out);
 }
 
 proc::~proc()
@@ -161,15 +172,15 @@ int sc_main(int argc, char *argv[])
       0x01697824, // and $t7,$t3,$t1
       0x01498025, // or $s0,$t2,$t1
       0x012a882a, // slt $s1,$t1,$t2
+      0x08000001  // j 1
   });
 
   proc.load_data_memory(std::vector<sc_uint<32>>{
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0});
 
-  for (int i = 0; i < 11; ++i)
+  for (int i = 0; i < 13; ++i)
   {
     sc_start(1, SC_NS);
-    std::cout << proc.pc4 << " " << proc.sl2_extended_offset << " " << proc.branch_alu_result << std::endl;
   }
 
   proc.dump_state();

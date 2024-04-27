@@ -33,6 +33,14 @@ void control::entry()
       break;
     }
     break;
+  case 2: // jump
+    ALUSrc.write(0);
+    RegWrite.write(0);
+    MemRead.write(0);
+    MemWrite.write(0);
+    ALUOp.write(alu_op::sub_op);
+    Jump.write(1);
+    break;
   case 4: // beq (branch on equal)
     ALUSrc.write(0);
     RegWrite.write(0);
