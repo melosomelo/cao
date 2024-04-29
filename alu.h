@@ -11,7 +11,7 @@ enum alu_op
   not_op,
   add_op,
   sub_op,
-  less_op
+  less_op,
 };
 
 /**
