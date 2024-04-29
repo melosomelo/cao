@@ -51,6 +51,8 @@ SC_MODULE(proc)
   // 32 bit sign-extender. Extends the 16-bit branch offset from
   // load, stores and conditional branches into a 32-bit signal.
   extend *extend32;
+  // Tiny module to extend the 26-bit address in the jump to 32 bits.
+  jcalc *j_calc;
 
   /**========== Execution/address calculation (EX) modules ==========*/
   // The main ALU of the processor. Performs the arithmetic
@@ -63,8 +65,6 @@ SC_MODULE(proc)
   // ALU used exclusively as an adder to calcute branch addresses.
   alu *branch_alu;
   shiftl2 *sl2;
-  // Tiny module to extend the 26-bit address in the jump to 32 bits.
-  jcalc *j_calc;
   // AND gate that outputs the result of the AND operation between the Branch control signal
   // and the zero output of the main ALU. Used to determine if the branch should be taken.
   andgate *Branch_and_main_alu_zero;
@@ -126,9 +126,12 @@ SC_MODULE(proc)
   sc_signal<bool> main_alu_zero;
   sc_signal<sc_uint<32>> jumpaddr32;
   sc_signal<sc_uint<32>> pc_src_mux_out;
-  sc_signal<sc_uint<32>> if_id_buffer_pc4_out;
-  sc_signal<sc_uint<32>> if_id_buffer_instruction_out;
-  sc_signal<sc_uint<32>> id_ex_buffer_pc4_out, id_ex_buffer_reg1_out, id_ex_buffer_reg2_out, id_ex_buffer_extended_offset_out;
+  sc_signal<sc_uint<32>> if_id_buffer_pc4_out, if_id_buffer_instruction_out;
+  sc_signal<sc_uint<32>> id_ex_buffer_pc4_out,
+      id_ex_buffer_reg1_out,
+      id_ex_buffer_reg2_out,
+      id_ex_buffer_extended_offset_out,
+      id_ex_buffer_jumpaddr32_out;
   // Instruction field signals. They're explained in the decode.h file.
   sc_signal<sc_uint<26>> jumpaddr26;
   sc_signal<sc_uint<16>> offset;

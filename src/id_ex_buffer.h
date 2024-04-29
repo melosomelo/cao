@@ -7,8 +7,8 @@
 SC_MODULE(ID_EX_buffer)
 {
   sc_in<bool> clk;
-  sc_in<sc_uint<32>> pc4_in, reg1_in, reg2_in, extended_offset_in;
-  sc_out<sc_uint<32>> pc4_out, reg1_out, reg2_out, extended_offset_out;
+  sc_in<sc_uint<32>> pc4_in, reg1_in, reg2_in, extended_offset_in, jumpaddr32_in;
+  sc_out<sc_uint<32>> pc4_out, reg1_out, reg2_out, extended_offset_out, jumpaddr32_out;
 
   reg *pc4, *reg1, *reg2, *extended_offset;
 

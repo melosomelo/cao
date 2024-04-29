@@ -171,10 +171,12 @@ void proc::init()
   id_ex_buffer->reg1_in(rfile_out1);
   id_ex_buffer->reg2_in(rfile_out2);
   id_ex_buffer->extended_offset_in(extended_offset);
+  id_ex_buffer->jumpaddr32_in(jumpaddr32);
   id_ex_buffer->pc4_out(id_ex_buffer_pc4_out);
   id_ex_buffer->reg1_out(id_ex_buffer_reg1_out);
   id_ex_buffer->reg2_out(id_ex_buffer_reg2_out);
   id_ex_buffer->extended_offset_out(id_ex_buffer_extended_offset_out);
+  id_ex_buffer->jumpaddr32_out(id_ex_buffer_jumpaddr32_out);
 }
 
 proc::~proc()
