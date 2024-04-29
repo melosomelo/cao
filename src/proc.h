@@ -14,6 +14,7 @@
 #include "control.h"
 #include "andgate.h"
 #include "jcalc.h"
+#include "if_id_buffer.h"
 
 SC_MODULE(proc)
 {
@@ -80,9 +81,12 @@ SC_MODULE(proc)
   // based on the chosen instruction.
   control *ctrl;
 
+  // Pipeline buffers. They hold pieces of data that are required to guarantee
+  // the consistent execution of pipelined instructions.
+  IF_ID_buffer *if_id_buffer;
+
   // Signals.
   // These are the physical wires that connect different modules together
-
   // The instruction to be fetched from the instruction memory
   sc_signal<sc_uint<32>> pc;
   // The value of the calculation of pc + 4 (address of the next sequential instruction)
@@ -120,6 +124,8 @@ SC_MODULE(proc)
   sc_signal<bool> main_alu_zero;
   sc_signal<sc_uint<32>> jumpaddr32;
   sc_signal<sc_uint<32>> pc_src_mux_out;
+  sc_signal<sc_uint<32>> if_id_buffer_pc4_out;
+  sc_signal<sc_uint<32>> if_id_buffer_instruction_out;
   // Instruction field signals. They're explained in the decode.h file.
   sc_signal<sc_uint<26>> jumpaddr26;
   sc_signal<sc_uint<16>> offset;

@@ -157,6 +157,13 @@ void proc::init()
   pc_src_mux->in1(jumpaddr32);
   pc_src_mux->sel(Jump);
   pc_src_mux->out(pc_src_mux_out);
+
+  if_id_buffer = new IF_ID_buffer("if_id_buffer");
+  if_id_buffer->clk(clk);
+  if_id_buffer->pc4_in(pc4);
+  if_id_buffer->pc4_out(if_id_buffer_pc4_out);
+  if_id_buffer->instruction_in(current_inst);
+  if_id_buffer->instruction_out(if_id_buffer_instruction_out);
 }
 
 proc::~proc()

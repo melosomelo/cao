@@ -19,6 +19,11 @@ SC_MODULE(IF_ID_buffer)
     instruction_reg->in(instruction_in);
     instruction_reg->out(instruction_out);
     instruction_reg->clk(clk);
+
+    pc4_reg = new reg("pc4_reg");
+    pc4_reg->in(pc4_in);
+    pc4_reg->out(pc4_out);
+    pc4_reg->clk(clk);
   }
 };
 
