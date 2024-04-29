@@ -28,10 +28,7 @@ int sc_main(int argc, char *argv[])
   proc.datamem->init_memory(data_memory_filename);
   proc.inst_mem->init_memory(instruction_memory_filename);
 
-  for (int i = 0; i < 3; ++i)
-  {
-    sc_start(1, SC_NS);
-  }
+  sc_start();
 
   proc.dump_state();
 
