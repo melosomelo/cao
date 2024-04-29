@@ -159,26 +159,30 @@ int sc_main(int argc, char *argv[])
   proc.rfile->memory[reg_num::$t3] = 30;
 
   proc.load_instruction_memory(std::vector<sc_uint<32>>{
-      0xad090000, // sw $t1,0($t0)
-      0xad0a0004, // sw $t2,4(t$0)
-      0xad0b0008, // sw $t3,8(t$0)
-      0x8d0c0008, // lw $t4,8($t0)
-      0x01296820, // add $t5,$t1,$t1
-      0x01697022, // sub $t6,$t3,$t1
-      0x01697824, // and $t7,$t3,$t1
-      0x01498025, // or $s0,$t2,$t1
-      0x012a882a, // slt $s1,$t1,$t2
-      0x11290002, // beq $t1,$t1,2
-      0x01697824, // and $t7,$t3,$t1
-      0x01498025, // or $s0,$t2,$t1
-      0x012a882a, // slt $s1,$t1,$t2
-      0x08000001  // j 1
+      /*
+        0xad090000, // sw $t1,0($t0)
+        0xad0a0004, // sw $t2,4(t$0)
+        0xad0b0008, // sw $t3,8(t$0)
+        0x8d0c0008, // lw $t4,8($t0)
+        0x01296820, // add $t5,$t1,$t1
+        0x01697022, // sub $t6,$t3,$t1
+        0x01697824, // and $t7,$t3,$t1
+        0x01498025, // or $s0,$t2,$t1
+        0x012a882a, // slt $s1,$t1,$t2
+        0x11290002, // beq $t1,$t1,2
+        0x01697824, // and $t7,$t3,$t1
+        0x01498025, // or $s0,$t2,$t1
+        0x012a882a, // slt $s1,$t1,$t2
+        0x08000001  // j 1
+      */
+      0x01294827, // nor $t1,$t1,$t1 (equals $t1 = not $t1)
+      0x014B6026  // xor $t4,$t2,$t3
   });
 
   proc.load_data_memory(std::vector<sc_uint<32>>{
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0});
 
-  for (int i = 0; i < 13; ++i)
+  for (int i = 0; i < 3; ++i)
   {
     sc_start(1, SC_NS);
   }

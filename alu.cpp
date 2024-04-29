@@ -23,6 +23,9 @@ void alu::compute()
   case alu_op::sub_op:
     temp_result = a.read() - b.read();
     break;
+  case alu_op::nor_op:
+    temp_result = ~(a.read() | b.read());
+    break;
   case alu_op::less_op:
     temp_result = a.read() < b.read() ? 1 : 0;
     break;
