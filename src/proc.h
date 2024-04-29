@@ -15,6 +15,7 @@
 #include "andgate.h"
 #include "jcalc.h"
 #include "if_id_buffer.h"
+#include "id_ex_buffer.h"
 
 SC_MODULE(proc)
 {
@@ -84,6 +85,7 @@ SC_MODULE(proc)
   // Pipeline buffers. They hold pieces of data that are required to guarantee
   // the consistent execution of pipelined instructions.
   IF_ID_buffer *if_id_buffer;
+  ID_EX_buffer *id_ex_buffer;
 
   // Signals.
   // These are the physical wires that connect different modules together
@@ -126,6 +128,7 @@ SC_MODULE(proc)
   sc_signal<sc_uint<32>> pc_src_mux_out;
   sc_signal<sc_uint<32>> if_id_buffer_pc4_out;
   sc_signal<sc_uint<32>> if_id_buffer_instruction_out;
+  sc_signal<sc_uint<32>> id_ex_buffer_pc4_out, id_ex_buffer_reg1_out, id_ex_buffer_reg2_out, id_ex_buffer_extended_offset_out;
   // Instruction field signals. They're explained in the decode.h file.
   sc_signal<sc_uint<26>> jumpaddr26;
   sc_signal<sc_uint<16>> offset;

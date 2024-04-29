@@ -164,6 +164,17 @@ void proc::init()
   if_id_buffer->pc4_out(if_id_buffer_pc4_out);
   if_id_buffer->instruction_in(current_inst);
   if_id_buffer->instruction_out(if_id_buffer_instruction_out);
+
+  id_ex_buffer = new ID_EX_buffer("id_ex_buffer");
+  id_ex_buffer->clk(clk);
+  id_ex_buffer->pc4_in(if_id_buffer_instruction_out);
+  id_ex_buffer->reg1_in(rfile_out1);
+  id_ex_buffer->reg2_in(rfile_out2);
+  id_ex_buffer->extended_offset_in(extended_offset);
+  id_ex_buffer->pc4_out(id_ex_buffer_pc4_out);
+  id_ex_buffer->reg1_out(id_ex_buffer_reg1_out);
+  id_ex_buffer->reg2_out(id_ex_buffer_reg2_out);
+  id_ex_buffer->extended_offset_out(id_ex_buffer_extended_offset_out);
 }
 
 proc::~proc()
