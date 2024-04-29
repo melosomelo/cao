@@ -1,2 +1,4 @@
 *.out
+proc
 processor.dump
+*.o

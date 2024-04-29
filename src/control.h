@@ -18,8 +18,7 @@ SC_MODULE(control)
 
   // Determines which register number will be fed into
   // the write_reg input port of the register file.
-  // Chooses between the rt instruction field (for lw instructions)
-  // and rd (for R-format instructions)
+  // Chooses between the rt instruction field and rd intrusction field
   sc_out<bool> RegDst;
   // Signals that instruction is a branch. Used in conjutction with the
   // zero output from the main ALU to determine if the branch should be taken or not.

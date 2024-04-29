@@ -33,6 +33,8 @@ void mem::init_memory(string filename)
     {
       end--;
     }
+    if (start >= end)
+      return;
     line = line.substr(start, end - start + 1);
     // Parsing the hexadecimal value and placing it into the memory
     unsigned int hex_val;

@@ -130,6 +130,8 @@ SC_MODULE(proc)
 
   void load_instruction_memory(std::vector<sc_uint<32>>);
   void load_data_memory(std::vector<sc_uint<32>>);
+  void load_instruction_memory(std::string filename);
+  void load_data_memory(std::string filename);
   void dump_state();
 };
 
