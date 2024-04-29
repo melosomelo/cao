@@ -132,6 +132,15 @@ SC_MODULE(proc)
       id_ex_buffer_reg2_out,
       id_ex_buffer_extended_offset_out,
       id_ex_buffer_jumpaddr32_out;
+  sc_signal<bool> id_ex_RegDst_out,
+      id_ex_Branch_out,
+      id_ex_Jump_out,
+      id_ex_RegWrite_out,
+      id_ex_MemWrite_out,
+      id_ex_MemRead_out,
+      id_ex_ALUSrc_out,
+      id_ex_MemToReg_out;
+  sc_signal<sc_uint<3>> id_ex_ALUOp_out;
   // Instruction field signals. They're explained in the decode.h file.
   sc_signal<sc_uint<26>> jumpaddr26;
   sc_signal<sc_uint<16>> offset;

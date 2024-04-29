@@ -172,11 +172,29 @@ void proc::init()
   id_ex_buffer->reg2_in(rfile_out2);
   id_ex_buffer->extended_offset_in(extended_offset);
   id_ex_buffer->jumpaddr32_in(jumpaddr32);
+  id_ex_buffer->RegDst_in(RegDst);
+  id_ex_buffer->Branch_in(Branch);
+  id_ex_buffer->Jump_in(Jump);
+  id_ex_buffer->RegWrite_in(RegWrite);
+  id_ex_buffer->MemWrite_in(MemWrite);
+  id_ex_buffer->MemRead_in(MemRead);
+  id_ex_buffer->ALUSrc_in(ALUSrc);
+  id_ex_buffer->MemToReg_in(MemtoReg);
+  id_ex_buffer->ALUOp_in(ALUOp);
   id_ex_buffer->pc4_out(id_ex_buffer_pc4_out);
   id_ex_buffer->reg1_out(id_ex_buffer_reg1_out);
   id_ex_buffer->reg2_out(id_ex_buffer_reg2_out);
   id_ex_buffer->extended_offset_out(id_ex_buffer_extended_offset_out);
   id_ex_buffer->jumpaddr32_out(id_ex_buffer_jumpaddr32_out);
+  id_ex_buffer->RegDst_out(id_ex_RegDst_out);
+  id_ex_buffer->Branch_out(id_ex_Branch_out);
+  id_ex_buffer->Jump_out(id_ex_Jump_out);
+  id_ex_buffer->RegWrite_out(id_ex_RegWrite_out);
+  id_ex_buffer->MemWrite_out(id_ex_MemWrite_out);
+  id_ex_buffer->MemRead_out(id_ex_MemRead_out);
+  id_ex_buffer->ALUSrc_out(id_ex_ALUSrc_out);
+  id_ex_buffer->MemToReg_out(id_ex_MemToReg_out);
+  id_ex_buffer->ALUOp_out(id_ex_ALUOp_out);
 }
 
 proc::~proc()

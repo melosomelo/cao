@@ -25,8 +25,6 @@ public:
   sc_in<T> din;
   sc_out<T> dout;
 
-  sc_in<bool> reset;
-  sc_in<bool> enable;
   sc_in<bool> clk;
 
   T val;
@@ -44,12 +42,7 @@ public:
 template <class T>
 void regT<T>::entry()
 {
-  if (reset)
-  {
-    val = 0;
-    dout.write(val);
-  }
-  else if (clk.event() && clk == 1 && enable == 1)
+  if (clk.event() && clk)
   {
     val = din.read();
     dout.write(val);
