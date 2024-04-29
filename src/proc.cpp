@@ -10,44 +10,23 @@ int sc_main(int argc, char *argv[])
   proc.clk(clk);
   proc.reset(reset);
 
+  std::string data_memory_filename = "datamem.dat";
+  std::string instruction_memory_filename = "instmem.hex";
+
   for (int i = 0; i < argc; i++)
   {
-    // Data memory file was specified.
-    if (argv[i] == "--data")
+    if (std::string{argv[i]} == "--data" && i != argc - 1)
     {
+      data_memory_filename = std::string{argv[++i]};
     }
-    std::cout << argv[i] << std::endl;
+    if (std::string{argv[i]} == "--instruction" && i != argc - 1)
+    {
+      instruction_memory_filename = std::string{argv[++i]};
+    }
   }
 
-  // Manually setting the contents of the register (for now)
-  proc.rfile->memory[reg_num::$t0] = 0;
-  proc.rfile->memory[reg_num::$t1] = 10;
-  proc.rfile->memory[reg_num::$t2] = 20;
-  proc.rfile->memory[reg_num::$t3] = 30;
-
-  proc.load_instruction_memory(std::vector<sc_uint<32>>{
-      /*
-        0xad090000, // sw $t1,0($t0)
-        0xad0a0004, // sw $t2,4(t$0)
-        0xad0b0008, // sw $t3,8(t$0)
-        0x8d0c0008, // lw $t4,8($t0)
-        0x01296820, // add $t5,$t1,$t1
-        0x01697022, // sub $t6,$t3,$t1
-        0x01697824, // and $t7,$t3,$t1
-        0x01498025, // or $s0,$t2,$t1
-        0x012a882a, // slt $s1,$t1,$t2
-        0x11290002, // beq $t1,$t1,2
-        0x01697824, // and $t7,$t3,$t1
-        0x01498025, // or $s0,$t2,$t1
-        0x012a882a, // slt $s1,$t1,$t2
-        0x08000001  // j 1
-      */
-      0x01294827, // nor $t1,$t1,$t1 (equals $t1 = not $t1)
-      0x014B6026  // xor $t4,$t2,$t3
-  });
-
-  proc.load_data_memory(std::vector<sc_uint<32>>{
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0});
+  proc.datamem->init_memory(data_memory_filename);
+  proc.inst_mem->init_memory(instruction_memory_filename);
 
   for (int i = 0; i < 3; ++i)
   {
