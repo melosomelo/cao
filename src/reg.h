@@ -34,8 +34,8 @@ enum reg_num
 SC_MODULE(reg)
 {
   sc_in<sc_uint<32>> in;
-  sc_in<bool> reset;
   sc_in<bool> clk;
+  // sc_in<bool> reset;
   // sc_in<bool> enable;
   sc_out<sc_uint<32>> out;
 
@@ -44,7 +44,7 @@ SC_MODULE(reg)
   SC_CTOR(reg)
   {
     SC_METHOD(entry);
-    sensitive << reset << clk.pos();
+    sensitive << clk.pos();
     val = 0;
   }
 

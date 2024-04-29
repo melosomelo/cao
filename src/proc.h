@@ -18,7 +18,7 @@
 SC_MODULE(proc)
 {
   sc_in<bool> clk;
-  sc_in<bool> reset;
+  // sc_in<bool> reset;
 
   // The processor modules.
   /**========== Instruction fetch (IF) modules ==========*/

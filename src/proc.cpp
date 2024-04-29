@@ -3,12 +3,12 @@
 int sc_main(int argc, char *argv[])
 {
   sc_clock clk("clk", 1, SC_NS);
-  sc_signal<bool> reset;
+  // sc_signal<bool> reset;
 
   proc proc("proc");
 
   proc.clk(clk);
-  proc.reset(reset);
+  // proc.reset(reset);
 
   std::string data_memory_filename = "datamem.dat";
   std::string instruction_memory_filename = "instmem.hex";
@@ -39,7 +39,7 @@ void proc::init()
 {
   pc_reg = new reg("pc_reg");
   pc_reg->in(pc_src_mux_out);
-  pc_reg->reset(reset);
+  // pc_reg->reset(reset);
   pc_reg->clk(clk);
   pc_reg->out(pc);
 
