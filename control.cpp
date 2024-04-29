@@ -31,6 +31,9 @@ void control::entry()
     case 38:
       ALUOp.write(alu_op::xor_op);
       break;
+    case 39:
+      ALUOp.write(alu_op::nor_op);
+      break;
     case 42:
       ALUOp.write(alu_op::less_op);
       break;

@@ -12,6 +12,7 @@ enum alu_op
   add_op,
   sub_op,
   less_op,
+  nor_op
 };
 
 /**
