@@ -177,22 +177,6 @@ proc::~proc()
   delete ctrl;
 }
 
-void proc::load_instruction_memory(std::vector<sc_uint<32>> instructions)
-{
-  for (auto i : instructions)
-  {
-    this->inst_mem->memory.push_back(i);
-  }
-}
-
-void proc::load_data_memory(std::vector<sc_uint<32>> data)
-{
-  for (auto v : data)
-  {
-    this->datamem->memory.push_back(v);
-  }
-}
-
 void proc::dump_state()
 {
   std::ofstream outfile("processor.dump");
