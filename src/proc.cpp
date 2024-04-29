@@ -181,6 +181,8 @@ void proc::init()
   id_ex_buffer->ALUSrc_in(ALUSrc);
   id_ex_buffer->MemToReg_in(MemtoReg);
   id_ex_buffer->ALUOp_in(ALUOp);
+  id_ex_buffer->rt_in(rt);
+  id_ex_buffer->rd_in(rd);
   id_ex_buffer->pc4_out(id_ex_buffer_pc4_out);
   id_ex_buffer->reg1_out(id_ex_buffer_reg1_out);
   id_ex_buffer->reg2_out(id_ex_buffer_reg2_out);
@@ -195,6 +197,8 @@ void proc::init()
   id_ex_buffer->ALUSrc_out(id_ex_ALUSrc_out);
   id_ex_buffer->MemToReg_out(id_ex_MemToReg_out);
   id_ex_buffer->ALUOp_out(id_ex_ALUOp_out);
+  id_ex_buffer->rt_out(id_ex_rt_out);
+  id_ex_buffer->rd_out(id_ex_rd_out);
 }
 
 proc::~proc()

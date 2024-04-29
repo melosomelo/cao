@@ -11,16 +11,30 @@ SC_MODULE(ID_EX_buffer)
   sc_in<bool> RegDst_in, Branch_in, Jump_in, RegWrite_in, MemWrite_in, MemRead_in, ALUSrc_in, MemToReg_in;
   sc_in<sc_uint<3>> ALUOp_in;
   sc_in<sc_uint<32>> pc4_in, reg1_in, reg2_in, extended_offset_in, jumpaddr32_in;
+  sc_in<sc_uint<5>> rt_in, rd_in;
+
   sc_out<sc_uint<32>> pc4_out, reg1_out, reg2_out, extended_offset_out, jumpaddr32_out;
   sc_out<bool> RegDst_out, Branch_out, Jump_out, RegWrite_out, MemWrite_out, MemRead_out, ALUSrc_out, MemToReg_out;
   sc_out<sc_uint<3>> ALUOp_out;
+  sc_out<sc_uint<5>> rt_out, rd_out;
 
   reg *pc4, *reg1, *reg2, *extended_offset;
   regT<bool> *RegDst, *Branch, *Jump, *RegWrite, *MemWrite, *MemRead, *ALUSrc, *MemToReg;
   regT<sc_uint<3>> *ALUOp;
+  regT<sc_uint<5>> *rt, *rd;
 
   SC_CTOR(ID_EX_buffer)
   {
+    rt = new regT<sc_uint<5>>("id_ex_rt");
+    rt->clk(clk);
+    rt->din(rt_in);
+    rt->dout(rt_out);
+
+    rd = new regT<sc_uint<5>>("id_ex_rd");
+    rd->clk(clk);
+    rd->din(rd_in);
+    rd->dout(rd_out);
+
     ALUOp = new regT<sc_uint<3>>("id_ex_ALUOp");
     ALUOp->clk(clk);
     ALUOp->din(ALUOp_in);

@@ -140,6 +140,7 @@ SC_MODULE(proc)
       id_ex_MemRead_out,
       id_ex_ALUSrc_out,
       id_ex_MemToReg_out;
+  sc_signal<sc_uint<5>> id_ex_rt_out, id_ex_rd_out;
   sc_signal<sc_uint<3>> id_ex_ALUOp_out;
   // Instruction field signals. They're explained in the decode.h file.
   sc_signal<sc_uint<26>> jumpaddr26;
