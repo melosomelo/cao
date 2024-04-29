@@ -199,6 +199,31 @@ void proc::init()
   id_ex_buffer->ALUOp_out(id_ex_ALUOp_out);
   id_ex_buffer->rt_out(id_ex_rt_out);
   id_ex_buffer->rd_out(id_ex_rd_out);
+
+  ex_mem_buffer = new EX_MEM_buffer("ex_mem_buffer");
+  ex_mem_buffer->clk(clk);
+  ex_mem_buffer->main_alu_zero_in(main_alu_zero);
+  ex_mem_buffer->Branch_in(id_ex_Branch_out);
+  ex_mem_buffer->Jump_in(id_ex_Jump_out);
+  ex_mem_buffer->RegWrite_in(id_ex_RegWrite_out);
+  ex_mem_buffer->MemWrite_in(id_ex_MemWrite_out);
+  ex_mem_buffer->MemRead_in(id_ex_MemRead_out);
+  ex_mem_buffer->MemToReg_in(id_ex_MemToReg_out);
+  ex_mem_buffer->branch_alu_result_in(branch_alu_result);
+  ex_mem_buffer->main_alu_result_in(main_alu_result);
+  ex_mem_buffer->reg2_in(id_ex_buffer_reg2_out);
+  ex_mem_buffer->write_reg_mux_out_in(write_reg_mux_out);
+  ex_mem_buffer->main_alu_zero_out(ex_mem_main_alu_zero_out);
+  ex_mem_buffer->Branch_out(ex_mem_Branch_out);
+  ex_mem_buffer->Jump_out(ex_mem_Jump_out);
+  ex_mem_buffer->RegWrite_out(ex_mem_RegWrite_out);
+  ex_mem_buffer->MemWrite_out(ex_mem_MemWrite_out);
+  ex_mem_buffer->MemRead_out(ex_mem_MemRead_out);
+  ex_mem_buffer->MemToReg_out(ex_mem_MemToReg_out);
+  ex_mem_buffer->branch_alu_result_out(ex_mem_branch_alu_result_out);
+  ex_mem_buffer->main_alu_result_out(ex_mem_main_alu_result_out);
+  ex_mem_buffer->reg2_out(ex_mem_reg2_out);
+  ex_mem_buffer->write_reg_mux_out_out(ex_mem_write_reg_mux_out_out);
 }
 
 proc::~proc()

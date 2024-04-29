@@ -16,6 +16,7 @@
 #include "jcalc.h"
 #include "if_id_buffer.h"
 #include "id_ex_buffer.h"
+#include "ex_mem_buffer.h"
 
 SC_MODULE(proc)
 {
@@ -44,10 +45,6 @@ SC_MODULE(proc)
   decode *dcode;
   // The register file. Holds 32 32-bit registers.
   regfile *rfile;
-  // Multiplexor that chooses the value that specifies the number
-  // of the register that will be written to. Chooses between the rt and rd
-  // instruction fields, for R-format and lw instructions respectively.
-  mux2<sc_uint<5>> *write_reg_mux;
   // 32 bit sign-extender. Extends the 16-bit branch offset from
   // load, stores and conditional branches into a 32-bit signal.
   extend *extend32;
@@ -65,12 +62,16 @@ SC_MODULE(proc)
   // ALU used exclusively as an adder to calcute branch addresses.
   alu *branch_alu;
   shiftl2 *sl2;
-  // AND gate that outputs the result of the AND operation between the Branch control signal
-  // and the zero output of the main ALU. Used to determine if the branch should be taken.
-  andgate *Branch_and_main_alu_zero;
+  // Multiplexor that chooses the value that specifies the number
+  // of the register that will be written to. Chooses between the rt and rd
+  // instruction fields, for R-format and lw instructions respectively.
+  mux2<sc_uint<5>> *write_reg_mux;
   /**========== Memory access (MEM) modules ==========*/
   // Data memory.
   dmem *datamem;
+  // AND gate that outputs the result of the AND operation between the Branch control signal
+  // and the zero output of the main ALU. Used to determine if the branch should be taken.
+  andgate *Branch_and_main_alu_zero;
   /**========== Write back (WB) modules ==========*/
   // Multiplexor that chooses the value that's going to be written to
   // the register file. Chooses between the value read from the
@@ -86,6 +87,7 @@ SC_MODULE(proc)
   // the consistent execution of pipelined instructions.
   IF_ID_buffer *if_id_buffer;
   ID_EX_buffer *id_ex_buffer;
+  EX_MEM_buffer *ex_mem_buffer;
 
   // Signals.
   // These are the physical wires that connect different modules together
@@ -142,6 +144,10 @@ SC_MODULE(proc)
       id_ex_MemToReg_out;
   sc_signal<sc_uint<5>> id_ex_rt_out, id_ex_rd_out;
   sc_signal<sc_uint<3>> id_ex_ALUOp_out;
+  sc_signal<bool> ex_mem_main_alu_zero_out, ex_mem_Branch_out, ex_mem_Jump_out,
+      ex_mem_RegWrite_out, ex_mem_MemWrite_out, ex_mem_MemRead_out, ex_mem_MemToReg_out;
+  sc_signal<sc_uint<32>> ex_mem_branch_alu_result_out, ex_mem_main_alu_result_out, ex_mem_reg2_out;
+  sc_signal<sc_uint<5>> ex_mem_write_reg_mux_out_out;
   // Instruction field signals. They're explained in the decode.h file.
   sc_signal<sc_uint<26>> jumpaddr26;
   sc_signal<sc_uint<16>> offset;
