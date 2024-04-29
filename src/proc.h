@@ -21,7 +21,7 @@ SC_MODULE(proc)
   sc_in<bool> reset;
 
   // The processor modules.
-
+  /**========== Instruction fetch (IF) modules ==========*/
   // The program counter register. Holds the value of the current instruction.
   reg *pc_reg;
   // Instruction memory.
@@ -29,46 +29,57 @@ SC_MODULE(proc)
   // An ALU used exclusively as an adder. Calculates the address of the
   // next sequential instruction (PC + 4).
   alu *pc_add4;
+  // Multiplexor that chooses between the next sequenital instruciton
+  // and the address specified by the beq instruction.
+  mux2<sc_uint<32>> *branch_alu_pc4_mux;
+  // Multiplexor that chooses between the output of branch_alu_pc4_mux
+  // and the address specified by the jump instruction.
+  mux2<sc_uint<32>> *pc_src_mux;
+
+  /**========== Instruction decode and register file read (ID) modules ==========*/
   // Decoder module. Responsible for splitting up the instruction retrieved
   // from the instruction memory and pass it along to other modules.
   decode *dcode;
   // The register file. Holds 32 32-bit registers.
   regfile *rfile;
-  // Data memory.
-  dmem *datamem;
-  // The main ALU of the processor. Performs the arithmetic
-  // and logical operations of the instruction set.
-  alu *main_alu;
-  // ALU used exclusively as an adder to calcute branch addresses.
-  alu *branch_alu;
-  // 32 bit sign-extender. Extends the 16-bit branch offset from
-  // load, stores and conditional branches into a 32-bit signal.
-  extend *extend32;
-  shiftl2 *sl2;
-  // Multiplexor that chooses between the next sequenital instruciton
-  // and the instruction specified by the beq instruction.
-  mux2<sc_uint<32>> *branch_alu_pc4_mux;
-  // Multiplexor that chooses the value of the second input parameter
-  // Chooses between the 2nd output of the register file and extended_offset
-  // signal (for arithmetic and load/store instructions, respectively).
-  mux2<sc_uint<32>> *main_alu_b_mux;
-  // Multiplexor that chooses the value that's going to be written to
-  // the register file. Chooses between the value read from the
-  // data memory and the main alu result (for arithmetic operations).
-  mux2<sc_uint<32>> *rfile_data_in_mux;
   // Multiplexor that chooses the value that specifies the number
   // of the register that will be written to. Chooses between the rt and rd
   // instruction fields, for R-format and lw instructions respectively.
   mux2<sc_uint<5>> *write_reg_mux;
-  // Control unit. Responsible for setting the control lines that control the individual components
-  // based on the chosen instruction.
-  control *ctrl;
+  // 32 bit sign-extender. Extends the 16-bit branch offset from
+  // load, stores and conditional branches into a 32-bit signal.
+  extend *extend32;
+
+  /**========== Execution/address calculation (EX) modules ==========*/
+  // The main ALU of the processor. Performs the arithmetic
+  // and logical operations of the instruction set.
+  alu *main_alu;
+  // Multiplexor that chooses the value of the second input parameter
+  // Chooses between the 2nd output of the register file and extended_offset
+  // signal (for arithmetic and load/store instructions, respectively).
+  mux2<sc_uint<32>> *main_alu_b_mux;
+  // ALU used exclusively as an adder to calcute branch addresses.
+  alu *branch_alu;
+  shiftl2 *sl2;
+  // Tiny module to extend the 26-bit address in the jump to 32 bits.
+  jcalc *j_calc;
   // AND gate that outputs the result of the AND operation between the Branch control signal
   // and the zero output of the main ALU. Used to determine if the branch should be taken.
   andgate *Branch_and_main_alu_zero;
-  // Tiny module to extend the 26-bit address in the jump to 32 bits.
-  jcalc *j_calc;
-  mux2<sc_uint<32>> *pc_src_mux;
+  /**========== Memory access (MEM) modules ==========*/
+  // Data memory.
+  dmem *datamem;
+  /**========== Write back (WB) modules ==========*/
+  // Multiplexor that chooses the value that's going to be written to
+  // the register file. Chooses between the value read from the
+  // data memory and the main alu result (for arithmetic operations).
+  mux2<sc_uint<32>> *rfile_data_in_mux;
+
+  // The control unit is a separate module (doesn't belong to any pipeline step)
+  // Responsible for setting the control lines that control the individual components
+  // based on the chosen instruction.
+  control *ctrl;
+
   // Signals.
   // These are the physical wires that connect different modules together
 
