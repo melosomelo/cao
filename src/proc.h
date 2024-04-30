@@ -17,6 +17,7 @@
 #include "if_id_buffer.h"
 #include "id_ex_buffer.h"
 #include "ex_mem_buffer.h"
+#include "mem_wb_buffer.h"
 
 SC_MODULE(proc)
 {
@@ -88,6 +89,7 @@ SC_MODULE(proc)
   IF_ID_buffer *if_id_buffer;
   ID_EX_buffer *id_ex_buffer;
   EX_MEM_buffer *ex_mem_buffer;
+  MEM_WB_buffer *mem_wb_buffer;
 
   // Signals.
   // These are the physical wires that connect different modules together
@@ -148,6 +150,8 @@ SC_MODULE(proc)
       ex_mem_RegWrite_out, ex_mem_MemWrite_out, ex_mem_MemRead_out, ex_mem_MemToReg_out;
   sc_signal<sc_uint<32>> ex_mem_branch_alu_result_out, ex_mem_main_alu_result_out, ex_mem_reg2_out;
   sc_signal<sc_uint<5>> ex_mem_write_reg_mux_out_out;
+  sc_signal<bool> mem_wb_MemToReg_out, mem_wb_RegWrite_out, mem_wb_Jump_out;
+  sc_signal<sc_uint<32>> mem_wb_dmem_out_out, mem_wb_main_alu_result_out;
   // Instruction field signals. They're explained in the decode.h file.
   sc_signal<sc_uint<26>> jumpaddr26;
   sc_signal<sc_uint<16>> offset;

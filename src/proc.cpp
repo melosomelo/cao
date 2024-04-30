@@ -224,6 +224,19 @@ void proc::init()
   ex_mem_buffer->main_alu_result_out(ex_mem_main_alu_result_out);
   ex_mem_buffer->reg2_out(ex_mem_reg2_out);
   ex_mem_buffer->write_reg_mux_out_out(ex_mem_write_reg_mux_out_out);
+
+  mem_wb_buffer = new MEM_WB_buffer("mem_wb_buffer");
+  mem_wb_buffer->clk(clk);
+  mem_wb_buffer->MemToReg_in(ex_mem_MemToReg_out);
+  mem_wb_buffer->RegWrite_in(ex_mem_RegWrite_out);
+  mem_wb_buffer->Jump_in(ex_mem_Jump_out);
+  mem_wb_buffer->dmem_out_in(dmem_out);
+  mem_wb_buffer->main_alu_result_in(ex_mem_main_alu_result_out);
+  mem_wb_buffer->MemToReg_out(mem_wb_MemToReg_out);
+  mem_wb_buffer->RegWrite_out(mem_wb_RegWrite_out);
+  mem_wb_buffer->Jump_out(mem_wb_Jump_out);
+  mem_wb_buffer->dmem_out_out(mem_wb_dmem_out_out);
+  mem_wb_buffer->main_alu_result_out(mem_wb_main_alu_result_out);
 }
 
 proc::~proc()
