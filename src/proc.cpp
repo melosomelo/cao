@@ -55,7 +55,7 @@ void proc::init()
   pc_add4->zero(dummy_pc4_zero);
 
   dcode = new decode("dcode");
-  dcode->instruction(current_inst);
+  dcode->instruction(if_id_buffer_instruction_out);
   dcode->opcode(opcode);
   dcode->rs(rs);
   dcode->rt(rt);
@@ -67,7 +67,7 @@ void proc::init()
 
   rfile = new regfile("rfile");
   rfile->clk(clk);
-  rfile->RegWrite(RegWrite);
+  rfile->RegWrite(mem_wb_RegWrite_out);
   rfile->read_reg1(rs);
   rfile->read_reg2(rt);
   rfile->write_reg(write_reg_mux_out);
@@ -80,11 +80,11 @@ void proc::init()
   extend32->out(extended_offset);
 
   sl2 = new shiftl2("sl2");
-  sl2->in(extended_offset);
+  sl2->in(id_ex_buffer_extended_offset_out);
   sl2->out(sl2_extended_offset);
 
   branch_alu = new alu("branch_alu");
-  branch_alu->a(pc4);
+  branch_alu->a(id_ex_buffer_pc4_out);
   branch_alu->b(sl2_extended_offset);
   branch_alu->op(const_add_op);
   branch_alu->result(branch_alu_result);
@@ -92,41 +92,41 @@ void proc::init()
 
   branch_alu_pc4_mux = new mux2<sc_uint<32>>("branch_alu_pc4_mux");
   branch_alu_pc4_mux->in0(pc4);
-  branch_alu_pc4_mux->in1(branch_alu_result);
+  branch_alu_pc4_mux->in1(ex_mem_branch_alu_result_out);
   branch_alu_pc4_mux->sel(take_branch);
   branch_alu_pc4_mux->out(branch_alu_pc4_mux_out);
 
   main_alu_b_mux = new mux2<sc_uint<32>>("main_alu_b_mux");
-  main_alu_b_mux->in0(rfile_out2);
-  main_alu_b_mux->in1(extended_offset);
-  main_alu_b_mux->sel(ALUSrc);
+  main_alu_b_mux->in0(id_ex_buffer_reg2_out);
+  main_alu_b_mux->in1(id_ex_buffer_extended_offset_out);
+  main_alu_b_mux->sel(id_ex_ALUSrc_out);
   main_alu_b_mux->out(main_alu_b_mux_out);
 
   main_alu = new alu("main_alu");
-  main_alu->a(rfile_out1);
+  main_alu->a(id_ex_buffer_reg1_out);
   main_alu->b(main_alu_b_mux_out);
-  main_alu->op(ALUOp);
+  main_alu->op(id_ex_ALUOp_out);
   main_alu->result(main_alu_result);
   main_alu->zero(main_alu_zero);
 
   datamem = new dmem("datamem");
-  datamem->addr(main_alu_result);
-  datamem->data_in(rfile_out2);
-  datamem->MemWrite(MemWrite);
-  datamem->MemRead(MemRead);
+  datamem->addr(ex_mem_main_alu_result_out);
+  datamem->data_in(ex_mem_reg2_out);
+  datamem->MemWrite(ex_mem_MemWrite_out);
+  datamem->MemRead(ex_mem_MemRead_out);
   datamem->clk(clk);
   datamem->data_out(dmem_out);
 
   rfile_data_in_mux = new mux2<sc_uint<32>>("rfile_data_in_mux");
-  rfile_data_in_mux->in0(main_alu_result);
-  rfile_data_in_mux->in1(dmem_out);
-  rfile_data_in_mux->sel(MemtoReg);
+  rfile_data_in_mux->in0(mem_wb_main_alu_result_out);
+  rfile_data_in_mux->in1(mem_wb_dmem_out_out);
+  rfile_data_in_mux->sel(mem_wb_MemToReg_out);
   rfile_data_in_mux->out(rfile_data_in);
 
   write_reg_mux = new mux2<sc_uint<5>>("write_reg_mux");
-  write_reg_mux->in0(rt);
-  write_reg_mux->in1(rd);
-  write_reg_mux->sel(RegDst);
+  write_reg_mux->in0(id_ex_rt_out);
+  write_reg_mux->in1(id_ex_rd_out);
+  write_reg_mux->sel(id_ex_RegDst_out);
   write_reg_mux->out(write_reg_mux_out);
 
   ctrl = new control("ctrl");
@@ -143,19 +143,19 @@ void proc::init()
   ctrl->Jump(Jump);
 
   Branch_and_main_alu_zero = new andgate("Branch_and_main_alu_zero");
-  Branch_and_main_alu_zero->in1(Branch);
-  Branch_and_main_alu_zero->in2(main_alu_zero);
+  Branch_and_main_alu_zero->in1(ex_mem_Branch_out);
+  Branch_and_main_alu_zero->in2(ex_mem_main_alu_zero_out);
   Branch_and_main_alu_zero->out(take_branch);
 
   j_calc = new jcalc("j_calc");
   j_calc->jumpaddr26(jumpaddr26);
-  j_calc->pc4(pc4);
+  j_calc->pc4(if_id_buffer_pc4_out);
   j_calc->result(jumpaddr32);
 
   pc_src_mux = new mux2<sc_uint<32>>("pc_src_mux");
   pc_src_mux->in0(branch_alu_pc4_mux_out);
-  pc_src_mux->in1(jumpaddr32);
-  pc_src_mux->sel(Jump);
+  pc_src_mux->in1(ex_mem_jumpaddr32_out);
+  pc_src_mux->sel(ex_mem_Jump_out);
   pc_src_mux->out(pc_src_mux_out);
 
   if_id_buffer = new IF_ID_buffer("if_id_buffer");
@@ -213,6 +213,7 @@ void proc::init()
   ex_mem_buffer->main_alu_result_in(main_alu_result);
   ex_mem_buffer->reg2_in(id_ex_buffer_reg2_out);
   ex_mem_buffer->write_reg_mux_out_in(write_reg_mux_out);
+  ex_mem_buffer->jumpaddr32_in(id_ex_buffer_jumpaddr32_out);
   ex_mem_buffer->main_alu_zero_out(ex_mem_main_alu_zero_out);
   ex_mem_buffer->Branch_out(ex_mem_Branch_out);
   ex_mem_buffer->Jump_out(ex_mem_Jump_out);
@@ -224,17 +225,16 @@ void proc::init()
   ex_mem_buffer->main_alu_result_out(ex_mem_main_alu_result_out);
   ex_mem_buffer->reg2_out(ex_mem_reg2_out);
   ex_mem_buffer->write_reg_mux_out_out(ex_mem_write_reg_mux_out_out);
+  ex_mem_buffer->jumpaddr32_out(ex_mem_jumpaddr32_out);
 
   mem_wb_buffer = new MEM_WB_buffer("mem_wb_buffer");
   mem_wb_buffer->clk(clk);
   mem_wb_buffer->MemToReg_in(ex_mem_MemToReg_out);
   mem_wb_buffer->RegWrite_in(ex_mem_RegWrite_out);
-  mem_wb_buffer->Jump_in(ex_mem_Jump_out);
   mem_wb_buffer->dmem_out_in(dmem_out);
   mem_wb_buffer->main_alu_result_in(ex_mem_main_alu_result_out);
   mem_wb_buffer->MemToReg_out(mem_wb_MemToReg_out);
   mem_wb_buffer->RegWrite_out(mem_wb_RegWrite_out);
-  mem_wb_buffer->Jump_out(mem_wb_Jump_out);
   mem_wb_buffer->dmem_out_out(mem_wb_dmem_out_out);
   mem_wb_buffer->main_alu_result_out(mem_wb_main_alu_result_out);
 }

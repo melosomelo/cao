@@ -148,9 +148,9 @@ SC_MODULE(proc)
   sc_signal<sc_uint<3>> id_ex_ALUOp_out;
   sc_signal<bool> ex_mem_main_alu_zero_out, ex_mem_Branch_out, ex_mem_Jump_out,
       ex_mem_RegWrite_out, ex_mem_MemWrite_out, ex_mem_MemRead_out, ex_mem_MemToReg_out;
-  sc_signal<sc_uint<32>> ex_mem_branch_alu_result_out, ex_mem_main_alu_result_out, ex_mem_reg2_out;
+  sc_signal<sc_uint<32>> ex_mem_branch_alu_result_out, ex_mem_main_alu_result_out, ex_mem_reg2_out, ex_mem_jumpaddr32_out;
   sc_signal<sc_uint<5>> ex_mem_write_reg_mux_out_out;
-  sc_signal<bool> mem_wb_MemToReg_out, mem_wb_RegWrite_out, mem_wb_Jump_out;
+  sc_signal<bool> mem_wb_MemToReg_out, mem_wb_RegWrite_out;
   sc_signal<sc_uint<32>> mem_wb_dmem_out_out, mem_wb_main_alu_result_out;
   // Instruction field signals. They're explained in the decode.h file.
   sc_signal<sc_uint<26>> jumpaddr26;

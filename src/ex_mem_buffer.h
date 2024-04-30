@@ -14,20 +14,25 @@ SC_MODULE(EX_MEM_buffer)
       MemWrite_in,
       MemRead_in,
       MemToReg_in;
-  sc_in<sc_uint<32>> branch_alu_result_in, main_alu_result_in, reg2_in;
+  sc_in<sc_uint<32>> branch_alu_result_in, main_alu_result_in, reg2_in, jumpaddr32_in;
   sc_in<sc_uint<5>> write_reg_mux_out_in;
 
   sc_out<bool> main_alu_zero_out, Branch_out, Jump_out, RegWrite_out, MemWrite_out, MemRead_out, MemToReg_out;
-  sc_out<sc_uint<32>> branch_alu_result_out, main_alu_result_out, reg2_out;
+  sc_out<sc_uint<32>> branch_alu_result_out, main_alu_result_out, reg2_out, jumpaddr32_out;
   sc_out<sc_uint<5>> write_reg_mux_out_out;
 
   regT<bool> *main_alu_zero;
   regT<bool> *Branch, *Jump, *RegWrite, *MemWrite, *MemRead, *MemToReg;
-  regT<sc_uint<32>> *branch_alu_result, *main_alu_result, *reg2;
+  regT<sc_uint<32>> *branch_alu_result, *main_alu_result, *reg2, *jumpaddr32;
   regT<sc_uint<5>> *write_reg_mux_out;
 
   SC_CTOR(EX_MEM_buffer)
   {
+    jumpaddr32 = new regT<sc_uint<32>>("ex_mem_jumpaddr32");
+    jumpaddr32->clk(clk);
+    jumpaddr32->din(jumpaddr32_in);
+    jumpaddr32->dout(jumpaddr32_out);
+
     main_alu_zero = new regT<bool>("ex_mem_main_alu_zero");
     main_alu_zero->clk(clk);
     main_alu_zero->din(main_alu_zero_in);
