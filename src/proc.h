@@ -2,6 +2,8 @@
 #define PROC_H_
 
 #include <systemc.h>
+#include <vector>
+#include <bitset>
 #include "reg.h"
 #include "dmem.h"
 #include "imem.h"

@@ -1,5 +1,57 @@
 #include "proc.h"
 
+std::vector<std::string> split_on_whitespace(std::string str)
+{
+  std::vector<std::string> tokens{};
+  std::string acc = "";
+  for (int i = 0; i < str.size(); i++)
+  {
+    // We don't need any empty strings.
+    if (str[i] == ' ' && acc.size() > 0)
+    {
+      tokens.push_back(acc);
+      acc.clear();
+    }
+    else if (str[i] != ' ')
+    {
+      acc += str[i];
+    }
+  }
+  if (acc.size() > 0)
+    tokens.push_back(acc);
+  return tokens;
+}
+
+std::string trim(std::string s)
+{
+  // Trimming the string.
+  size_t start = 0;
+  size_t end = s.length() - 1;
+  while (start < end && std::isspace(s[start]))
+  {
+    start++;
+  }
+  while (end > start && std::isspace(s[end]))
+  {
+    end--;
+  }
+  if (start >= end)
+    return "";
+  return s.substr(start, end - start + 1);
+}
+
+void wrong_syntax(std::string cmd, std::string msg = "")
+{
+  if (msg.size() > 0)
+  {
+    std::cout << "error: invalid syntax for " << cmd << ": " << msg << std::endl;
+  }
+  else
+  {
+    std::cout << "error: invalid syntax for " << cmd << std::endl;
+  }
+}
+
 int sc_main(int argc, char *argv[])
 {
   sc_clock clk("clk", 1, SC_NS);
@@ -28,9 +80,105 @@ int sc_main(int argc, char *argv[])
   proc.datamem->init_memory(data_memory_filename);
   proc.inst_mem->init_memory(instruction_memory_filename);
 
-  sc_start();
+  std::string line;
+  std::cout << "Instruction and data memory have been loaded and simulation is ready to begin." << std::endl
+            << "Run 'help' to list the available commands and their syntax." << std::endl;
+  while (true)
+  {
+    std::cout << "> ";
+    std::getline(std::cin, line);
+    line = trim(line);
+    std::vector<std::string> tokens = split_on_whitespace(line);
+    auto cmd = tokens.at(0);
+    if (cmd == "exit")
+    {
+      std::cout << "Goodbye!\n";
+      exit(0);
+    }
+    else if (cmd == "help")
+    {
+      std::cout << "List of commands:\n"
+                << "\trun n - runs the simulation for n cycles\n"
+                << "\treg n [b|d|x] - prints the value of register n in binary/decimal/hex base\n"
+                << "\tdata n [b|d|x] - prints the data word at position n in binary/decimal/hex base\n"
+                << "\thelp - prints this message\n"
+                << "\texit - stops the program\n";
+    }
+    else if (cmd == "run")
+    {
+      if (tokens.size() < 2)
+      {
+        wrong_syntax(cmd);
+        continue;
+      }
+      int n = std::stoi(tokens.at(1));
+      for (int i = 0; i < n; i++)
+      {
+        sc_start(1, SC_NS);
+      }
+      std::cout << "Simulation was run for " << n << " cycles.\n";
+    }
+    else if (cmd == "reg")
+    {
+      if (tokens.size() < 2)
+      {
+        wrong_syntax(cmd);
+        continue;
+      }
+      int reg_n = std::stoi(tokens.at(1));
+      if (reg_n < 0 || reg_n > 31)
+      {
+        std::cout << "error: invalid register number (must be between 0 and 31)\n";
+        continue;
+      }
+      std::string base = "x";
+      if (tokens.size() >= 3 && (tokens.at(2) == "x" or tokens.at(2) == "d" or tokens.at(2) == "b"))
+      {
+        base = tokens.at(2);
+      }
+      std::cout << "Value for register " << reg_n << ": ";
 
-  proc.dump_state();
+      if (base == "x")
+        std::cout << std::hex << proc.rfile->memory[reg_n];
+      else if (base == "d")
+        std::cout << proc.rfile->memory[reg_n];
+      else
+        std::cout << std::bitset<32>(proc.rfile->memory[reg_n]);
+      std::cout << std::dec << std::endl;
+    }
+    else if (cmd == "data")
+    {
+      if (tokens.size() < 2)
+      {
+        wrong_syntax(cmd);
+        continue;
+      }
+      int word_n = std::stoi(tokens.at(1));
+      if (word_n < 0 || word_n >= proc.datamem->memory.size())
+      {
+        std::cout << "error: invalid data word number (must be between 0 and " << proc.datamem->memory.size() << ")\n";
+        continue;
+      }
+      std::string base = "x";
+      if (tokens.size() >= 3 && (tokens.at(2) == "x" or tokens.at(2) == "d" or tokens.at(2) == "b"))
+      {
+        base = tokens.at(2);
+      }
+      std::cout << "Value for data word " << word_n << ": ";
+
+      if (base == "x")
+        std::cout << std::hex << proc.datamem->memory[word_n];
+      else if (base == "d")
+        std::cout << proc.datamem->memory[word_n];
+      else
+        std::cout << std::bitset<32>(proc.datamem->memory[word_n]);
+      std::cout << std::dec << std::endl;
+    }
+    else
+    {
+      std::cout << "error: unknown command '" << cmd << "'" << std::endl;
+    }
+  }
 
   return 0;
 }

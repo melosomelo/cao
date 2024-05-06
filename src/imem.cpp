@@ -4,7 +4,9 @@ void imem::entry()
 {
   if (addr.read() >= size())
   {
-    return sc_stop();
+    // NOP instruction
+    inst.write(0x00000000);
+    return;
   }
   assert(addr.read() % 4 == 0);
   inst.write(memory[addr.read() / 4]);

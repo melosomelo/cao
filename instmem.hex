@@ -1,3 +1,10 @@
 0x01294827 # nor $t1,$t1,$t1 (equals $t1 = not $t1)
-0x014a5027 # nor $t2,$t2,$t2
-0x016b5827 # nor $t3,$t3,$t3
+0x01294827 # nor $t1,$t1,$t1 (equals $t1 = not $t1)
+0x01294827 # nor $t1,$t1,$t1 (equals $t1 = not $t1)
+0x01294827 # nor $t1,$t1,$t1 (equals $t1 = not $t1)
+0x01294827 # nor $t1,$t1,$t1 (equals $t1 = not $t1)
+0x01294827 # nor $t1,$t1,$t1 (equals $t1 = not $t1)
+0x01294827 # nor $t1,$t1,$t1 (equals $t1 = not $t1)
+0x01294827 # nor $t1,$t1,$t1 (equals $t1 = not $t1)
+0x01294827 # nor $t1,$t1,$t1 (equals $t1 = not $t1)
+0x01294827 # nor $t1,$t1,$t1 (equals $t1 = not $t1)
