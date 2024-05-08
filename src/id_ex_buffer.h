@@ -18,7 +18,7 @@ SC_MODULE(ID_EX_buffer)
   sc_out<sc_uint<3>> ALUOp_out;
   sc_out<sc_uint<5>> rt_out, rd_out;
 
-  reg *pc4, *reg1, *reg2, *extended_offset;
+  reg *pc4, *reg1, *reg2, *extended_offset, *jumpaddr32;
   regT<bool> *RegDst, *Branch, *Jump, *RegWrite, *MemWrite, *MemRead, *ALUSrc, *MemToReg;
   regT<sc_uint<3>> *ALUOp;
   regT<sc_uint<5>> *rt, *rd;
@@ -99,6 +99,11 @@ SC_MODULE(ID_EX_buffer)
     extended_offset->in(extended_offset_in);
     extended_offset->out(extended_offset_out);
     extended_offset->clk(clk);
+
+    jumpaddr32 = new reg("id_ex_jumpaddr32");
+    jumpaddr32->clk(clk);
+    jumpaddr32->in(jumpaddr32_in);
+    jumpaddr32->out(jumpaddr32_out);
   }
 };
 
