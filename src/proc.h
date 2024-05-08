@@ -4,6 +4,7 @@
 #include <systemc.h>
 #include <vector>
 #include <bitset>
+#include <iomanip>
 #include "reg.h"
 #include "dmem.h"
 #include "imem.h"

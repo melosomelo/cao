@@ -79,6 +79,8 @@ int sc_main(int argc, char *argv[])
 
   proc.datamem->init_memory(data_memory_filename);
   proc.inst_mem->init_memory(instruction_memory_filename);
+  proc.rfile->memory[1] = 20;
+  proc.rfile->memory[2] = 10;
 
   std::string line;
   std::cout << "Instruction and data memory have been loaded and simulation is ready to begin." << std::endl
@@ -100,6 +102,7 @@ int sc_main(int argc, char *argv[])
       std::cout << "List of commands:\n"
                 << "\trun n - runs the simulation for n cycles\n"
                 << "\treg n [b|d|x] - prints the value of register n in binary/decimal/hex base\n"
+                << "\tregall [b|d|x] - prints the contents of all registers in binary/decimal/hex base\n"
                 << "\tdata n [b|d|x] - prints the data word at position n in binary/decimal/hex base\n"
                 << "\thelp - prints this message\n"
                 << "\texit - stops the program\n";
@@ -145,6 +148,25 @@ int sc_main(int argc, char *argv[])
       else
         std::cout << std::bitset<32>(proc.rfile->memory[reg_n]);
       std::cout << std::dec << std::endl;
+    }
+    else if (cmd == "regall")
+    {
+      std::string base = "x";
+      if (tokens.size() >= 2 && (tokens.at(1) == "x" or tokens.at(1) == "d" or tokens.at(1) == "b"))
+      {
+        base = tokens.at(1);
+      }
+      for (int i = 0; i < 32; i++)
+      {
+        std::cout << "Register " << i << ": ";
+        if (base == "x")
+          std::cout << std::hex << proc.rfile->memory[i];
+        else if (base == "d")
+          std::cout << proc.rfile->memory[i];
+        else
+          std::cout << std::bitset<32>(proc.rfile->memory[i]);
+        std::cout << std::dec << std::endl;
+      }
     }
     else if (cmd == "data")
     {
