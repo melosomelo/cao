@@ -2,9 +2,21 @@
 
 void control::entry()
 {
+  // NOP. Do nothing. Reset all control lines.
+  if (opcode.read() == 0 && funct.read() == 0)
+  {
+    RegDst.write(0);
+    Branch.write(0);
+    Jump.write(0);
+    RegWrite.write(0);
+    MemWrite.write(0);
+    MemRead.write(0);
+    ALUSrc.write(0);
+    MemtoReg.write(0);
+    return;
+  }
   switch (opcode.read())
   {
-
   case 0:              // R-format instruction
     RegDst.write(1);   // `write_reg` from regfile will receive the rd instruction field.
     ALUSrc.write(0);   // second output from the register file goes into the main ALU.

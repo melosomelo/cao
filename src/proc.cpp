@@ -77,10 +77,8 @@ int sc_main(int argc, char *argv[])
     }
   }
 
-  proc.datamem->init_memory(data_memory_filename);
   proc.inst_mem->init_memory(instruction_memory_filename);
-  proc.rfile->memory[1] = 20;
-  proc.rfile->memory[2] = 10;
+  proc.datamem->init_memory(data_memory_filename);
 
   std::string line;
   std::cout << "Instruction and data memory have been loaded and simulation is ready to begin." << std::endl
@@ -104,6 +102,7 @@ int sc_main(int argc, char *argv[])
                 << "\treg n [b|d|x] - prints the value of register n in binary/decimal/hex base\n"
                 << "\tregall [b|d|x] - prints the contents of all registers in binary/decimal/hex base\n"
                 << "\tdata n [b|d|x] - prints the data word at position n in binary/decimal/hex base\n"
+                << "\tpc - prints the value of the PC\n"
                 << "\thelp - prints this message\n"
                 << "\texit - stops the program\n";
     }
@@ -195,6 +194,10 @@ int sc_main(int argc, char *argv[])
       else
         std::cout << std::bitset<32>(proc.datamem->memory[word_n]);
       std::cout << std::dec << std::endl;
+    }
+    else if (cmd == "pc")
+    {
+      std::cout << proc.pc_reg->out << std::endl;
     }
     else
     {
