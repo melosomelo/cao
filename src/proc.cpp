@@ -218,7 +218,7 @@ void proc::init()
   rfile->RegWrite(mem_wb_RegWrite_out);
   rfile->read_reg1(rs);
   rfile->read_reg2(rt);
-  rfile->write_reg(write_reg_mux_out);
+  rfile->write_reg(mem_wb_write_reg_mux_out_out);
   rfile->data_in(rfile_data_in);
   rfile->data_out1(rfile_out1);
   rfile->data_out2(rfile_out2);
@@ -381,10 +381,12 @@ void proc::init()
   mem_wb_buffer->RegWrite_in(ex_mem_RegWrite_out);
   mem_wb_buffer->dmem_out_in(dmem_out);
   mem_wb_buffer->main_alu_result_in(ex_mem_main_alu_result_out);
+  mem_wb_buffer->write_reg_mux_out_in(ex_mem_write_reg_mux_out_out);
   mem_wb_buffer->MemToReg_out(mem_wb_MemToReg_out);
   mem_wb_buffer->RegWrite_out(mem_wb_RegWrite_out);
   mem_wb_buffer->dmem_out_out(mem_wb_dmem_out_out);
   mem_wb_buffer->main_alu_result_out(mem_wb_main_alu_result_out);
+  mem_wb_buffer->write_reg_mux_out_out(mem_wb_write_reg_mux_out_out);
 }
 
 proc::~proc()

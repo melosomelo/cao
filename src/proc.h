@@ -154,6 +154,7 @@ SC_MODULE(proc)
   sc_signal<sc_uint<5>> ex_mem_write_reg_mux_out_out;
   sc_signal<bool> mem_wb_MemToReg_out, mem_wb_RegWrite_out;
   sc_signal<sc_uint<32>> mem_wb_dmem_out_out, mem_wb_main_alu_result_out;
+  sc_signal<sc_uint<5>> mem_wb_write_reg_mux_out_out;
   // Instruction field signals. They're explained in the decode.h file.
   sc_signal<sc_uint<26>> jumpaddr26;
   sc_signal<sc_uint<16>> offset;

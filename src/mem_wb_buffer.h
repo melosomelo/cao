@@ -9,12 +9,15 @@ SC_MODULE(MEM_WB_buffer)
 {
   sc_in<bool> clk, MemToReg_in, RegWrite_in;
   sc_in<sc_uint<32>> dmem_out_in, main_alu_result_in;
+  sc_in<sc_uint<5>> write_reg_mux_out_in;
 
   sc_out<bool> MemToReg_out, RegWrite_out;
   sc_out<sc_uint<32>> dmem_out_out, main_alu_result_out;
+  sc_out<sc_uint<5>> write_reg_mux_out_out;
 
   regT<bool> *MemToReg, *RegWrite;
   regT<sc_uint<32>> *dmem_out, *main_alu_result;
+  regT<sc_uint<5>> *write_reg_mux_out;
 
   SC_CTOR(MEM_WB_buffer)
   {
@@ -37,6 +40,11 @@ SC_MODULE(MEM_WB_buffer)
     main_alu_result->clk(clk);
     main_alu_result->din(main_alu_result_in);
     main_alu_result->dout(main_alu_result_out);
+
+    write_reg_mux_out = new regT<sc_uint<5>>("mem_wb_write_reg_mux_out");
+    write_reg_mux_out->clk(clk);
+    write_reg_mux_out->din(write_reg_mux_out_in);
+    write_reg_mux_out->dout(write_reg_mux_out_out);
   };
 };
 
