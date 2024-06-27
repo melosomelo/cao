@@ -4,10 +4,14 @@
   "main": "index.js",
   "license": "MIT",
   "devDependencies": {
+    "@types/node": "^20.14.6",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5"
   },
   "scripts": {
     "start": "ts-node src/index.ts"
+  },
+  "dependencies": {
+    "commander": "^12.1.0"
   }
 }

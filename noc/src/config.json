@@ -1,0 +1,15 @@
+{
+  "blockedCells": [
+    { "x": 3, "y": 4 },
+    { "x": 2, "y": 4 },
+    { "x": 2, "y": 5 },
+    { "x": 1, "y": 6 }
+  ],
+  "packets": [
+    {
+      "origin": { "x": 1, "y": 7 },
+      "destination": { "x": 4, "y": 4 },
+      "payload": 10
+    }
+  ]
+}
