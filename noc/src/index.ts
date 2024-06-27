@@ -17,6 +17,7 @@ interface Config {
 enum ActionType {
   Move = "move",
   Wait = "wait",
+  GiveUp = "give up",
 }
 
 enum Direction {
@@ -35,11 +36,23 @@ interface WaitAction {
   packetCulprit: number;
 }
 
-type Action = WaitAction | MoveAction;
+interface GiveUpAction {
+  type: ActionType.GiveUp;
+}
+
+type Action = WaitAction | MoveAction | GiveUpAction;
+
+enum PacketStatus {
+  GivenUp = "given up",
+  Active = "active",
+  Completed = "completed",
+}
 
 class Packet {
   history: Array<Action> = [];
   position: Coordinate;
+  subsequentRoundsWaiting = 0;
+  status = PacketStatus.Active;
   constructor(
     public origin: Coordinate,
     public destination: Coordinate,
@@ -47,13 +60,6 @@ class Packet {
     public id: number
   ) {
     this.position = { ...origin };
-  }
-
-  hasReachedDestination() {
-    return (
-      this.position.x === this.destination.x &&
-      this.position.y === this.destination.y
-    );
   }
 }
 
@@ -65,36 +71,70 @@ function main(config: Config) {
     (packet, i) =>
       new Packet(packet.origin, packet.destination, packet.payload, i)
   );
-  while (packets.some((packet) => !packet.hasReachedDestination())) {
-    for (
-      let i = 0;
-      i < packets.filter((packet) => !packet.hasReachedDestination()).length;
-      i++
-    ) {
-      const packet = packets[i];
+  let activePackets = packets.filter(
+    (packet) => packet.status === PacketStatus.Active
+  );
+  while (activePackets.length > 0) {
+    for (let packet of activePackets) {
       const nextDirection = calculateNextDirection(packet);
       const nextPosition = move(packet.position, nextDirection);
       const { hasPacketInIt, packetCulprit } = cellHasPacketInIt(
         nextPosition,
         packets
       );
-      if (hasPacketInIt)
+      if (hasPacketInIt) {
         packet.history.push({
           type: ActionType.Wait,
           packetCulprit: packetCulprit!,
         });
-      else {
+        packet.subsequentRoundsWaiting++;
+        if (packet.subsequentRoundsWaiting === 10) {
+          packet.history.push({
+            type: ActionType.GiveUp,
+          });
+          packet.status = PacketStatus.GivenUp;
+        }
+      } else {
         packet.history.push({
           type: ActionType.Move,
           direction: nextDirection,
         });
         packet.position = nextPosition;
+        if (equalCoordinates(packet.position, packet.destination)) {
+          packet.status = PacketStatus.Completed;
+        }
       }
     }
+    activePackets = packets.filter(
+      (packet) => packet.status === PacketStatus.Active
+    );
   }
 
   for (let packet of packets) {
-    console.log(packet.history);
+    console.log(`Stats for packet ${packet.id}`);
+    console.log(
+      `\tTotal amount of hops: ${
+        packet.history.filter((action) => action.type === ActionType.Move)
+          .length
+      }`
+    );
+    console.log("\tHistory:");
+    let pos = packet.origin;
+    for (let action of packet.history) {
+      if (action.type === ActionType.Move) {
+        let nextPos = move(pos, action.direction);
+        console.log(
+          `\t - Move from (${pos.x},${pos.y}) to (${nextPos.x},${nextPos.y})`
+        );
+        pos = nextPos;
+      } else if (action.type === ActionType.Wait) {
+        console.log(
+          `\t - Waiting at (${pos.x},${pos.y}) because of packet ${action.packetCulprit}`
+        );
+      } else if (action.type === ActionType.GiveUp) {
+        console.log(`\t - Gave up`);
+      }
+    }
   }
 }
 
@@ -116,7 +156,7 @@ function cellHasPacketInIt(cell: Coordinate, packets: Array<Packet>) {
     (packet) =>
       packet.position.x === cell.x &&
       packet.position.y === cell.y &&
-      !packet.hasReachedDestination()
+      packet.status === PacketStatus.Active
   );
   return {
     hasPacketInIt: packetCulprit !== undefined,
@@ -135,6 +175,10 @@ function move(position: Coordinate, direction: Direction): Coordinate {
     return { x: position.x, y: position.y + 1 };
   }
   return { x: position.x, y: position.y - 1 };
+}
+
+function equalCoordinates(a: Coordinate, b: Coordinate) {
+  return a.x === b.x && a.y === b.y;
 }
 
 const config = JSON.parse(
