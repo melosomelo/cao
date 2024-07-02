@@ -102,9 +102,28 @@ function main(config: Config) {
       );
       if (path.length > 1) {
         const nextStep = path[1]; // Get the next step in the path
-        const direction = getDirection(packet.position, nextStep);
-        packet.history.push({ type: ActionType.Move, direction });
-        packet.position = nextStep;
+        const nextDirection = getDirection(packet.position, nextStep);
+        const nextRouter = routers[nextStep.y][nextStep.x];
+        // Desired router port is not full.
+        if (canEnterRouter(nextRouter, oppositeDirection(nextDirection))) {
+          const packetLastMovement = getPacketLastMovement(packet);
+          // Update the value of the port of the current router to reflect the packet leaving.
+          if (packetLastMovement !== null) {
+            const currentRouter = routers[packet.position.y][packet.position.x];
+            currentRouter.buffersCapacity[
+              oppositeDirection(packetLastMovement.direction)
+            ] -= 1;
+          }
+          // Updating the value of the port of the next router to reflect the packet arriving.
+          nextRouter.buffersCapacity[oppositeDirection(nextDirection)] += 1;
+          packet.history.push({
+            type: ActionType.Move,
+            direction: nextDirection,
+          });
+          packet.position = nextStep;
+        } else {
+          console.log("wow!");
+        }
       } else {
         packet.history.push({ type: ActionType.GiveUp });
         packet.status = PacketStatus.GivenUp;
@@ -147,6 +166,31 @@ function main(config: Config) {
         console.log(`\t - Gave up`);
       }
     }
+  }
+}
+
+function getPacketLastMovement(packet: Packet) {
+  for (let i = packet.history.length - 1; i >= 0; i--) {
+    const action = packet.history[i];
+    if (action.type === ActionType.Move) return action as MoveAction;
+  }
+  return null;
+}
+
+function canEnterRouter(router: Router, from: Direction) {
+  return router.buffersCapacity[from] < 4;
+}
+
+function oppositeDirection(direction: Direction) {
+  switch (direction) {
+    case Direction.East:
+      return Direction.West;
+    case Direction.North:
+      return Direction.South;
+    case Direction.West:
+      return Direction.East;
+    default:
+      return Direction.North;
   }
 }
 
@@ -199,12 +243,13 @@ function bfs(
       Direction.West,
     ]) {
       const neighbor = getNeighbor(coord, direction);
+      console.log(neighbor, blockedCells.has(`${neighbor.x},${neighbor.y}`));
 
       if (
         neighbor.x >= 0 &&
-        neighbor.x < routers[0].length &&
+        neighbor.x < 8 &&
         neighbor.y >= 0 &&
-        neighbor.y < routers.length &&
+        neighbor.y < 8 &&
         !blockedCells.has(`${neighbor.x},${neighbor.y}`) &&
         !visited.has(`${neighbor.x},${neighbor.y}`)
       ) {
