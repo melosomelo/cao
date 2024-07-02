@@ -121,8 +121,19 @@ function main(config: Config) {
             direction: nextDirection,
           });
           packet.position = nextStep;
+          packet.subsequentRoundsWaiting = 0;
         } else {
-          console.log("wow!");
+          packet.history.push({
+            type: ActionType.Wait,
+            targetRouter: nextStep,
+            targetRouterPort: oppositeDirection(nextDirection),
+          });
+          packet.subsequentRoundsWaiting++;
+          if (packet.subsequentRoundsWaiting === 10) {
+            packet.history.push({ type: ActionType.GiveUp });
+            packet.status = PacketStatus.GivenUp;
+          }
+          continue;
         }
       } else {
         packet.history.push({ type: ActionType.GiveUp });
@@ -133,6 +144,13 @@ function main(config: Config) {
         packet.position.x === packet.destination.x &&
         packet.position.y === packet.destination.y
       ) {
+        const packetLastMovement = getPacketLastMovement(packet);
+        if (packetLastMovement !== null) {
+          const currentRouter = routers[packet.position.y][packet.position.x];
+          currentRouter.buffersCapacity[
+            oppositeDirection(packetLastMovement.direction)
+          ] -= 1;
+        }
         packet.status = PacketStatus.Completed;
       }
     }
@@ -243,7 +261,6 @@ function bfs(
       Direction.West,
     ]) {
       const neighbor = getNeighbor(coord, direction);
-      console.log(neighbor, blockedCells.has(`${neighbor.x},${neighbor.y}`));
 
       if (
         neighbor.x >= 0 &&

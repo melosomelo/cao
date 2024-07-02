@@ -57,18 +57,23 @@
       "payload": 10
     },
     {
-      "origin": { "x": 3, "y": 6 },
-      "destination": { "x": 3, "y": 0 },
+      "origin": { "x": 3, "y": 0 },
+      "destination": { "x": 3, "y": 6 },
       "payload": 10
     },
     {
-      "origin": { "x": 0, "y": 3 },
-      "destination": { "x": 6, "y": 3 },
+      "origin": { "x": 3, "y": 0 },
+      "destination": { "x": 3, "y": 6 },
       "payload": 10
     },
     {
-      "origin": { "x": 6, "y": 3 },
-      "destination": { "x": 0, "y": 3 },
+      "origin": { "x": 3, "y": 0 },
+      "destination": { "x": 3, "y": 6 },
+      "payload": 10
+    },
+    {
+      "origin": { "x": 3, "y": 0 },
+      "destination": { "x": 3, "y": 6 },
       "payload": 10
     }
   ]
