@@ -5,6 +5,7 @@ interface Coordinate {
   x: number;
   y: number;
 }
+
 interface Config {
   blockedCells: Array<Coordinate>;
   packets: Array<{
@@ -26,6 +27,7 @@ enum Direction {
   East = "east",
   West = "west",
 }
+
 interface MoveAction {
   type: ActionType.Move;
   direction: Direction;
@@ -75,67 +77,44 @@ class Router {
 }
 
 function main(config: Config) {
-  const routers: Array<Array<Router>> = new Array(8).fill(
-    new Array(8).fill(new Router())
+  const blockedCells = new Set(
+    config.blockedCells.map((coordinate) => `${coordinate.x},${coordinate.y}`)
+  );
+  const routers: Array<Array<Router>> = Array.from({ length: 8 }, () =>
+    Array.from({ length: 8 }, () => new Router())
   );
   const packets = config.packets.map(
     (packet, i) =>
       new Packet(packet.origin, packet.destination, packet.payload, i)
   );
-  packets.forEach(
-    (packet) =>
-      routers[packet.position.y][packet.position.x].buffersCapacity[
-        Direction.North
-      ]++
-  );
   let activePackets = packets.filter(
     (packet) => packet.status === PacketStatus.Active
   );
+
   while (activePackets.length > 0) {
     for (let packet of activePackets) {
-      console.log(routers);
-      const nextDirection = calculateNextDirection(packet);
-      const nextPosition = move(packet.position, nextDirection);
-      const currentRouter = routers[packet.position.y][packet.position.x];
-      const nextRouter = routers[nextPosition.y][nextPosition.x];
-      const { hasPacketInIt, packetCulprit } = cellHasPacketInIt(
-        nextPosition,
-        packets
+      // Implement BFS for packet movement
+      const path = bfs(
+        packet.position,
+        packet.destination,
+        blockedCells,
+        routers
       );
-      if (canEnterRouter(nextRouter, oppositeDirection(nextDirection))) {
-        const packetLastMovement = getPacketLastMovement(packet);
-        if (packetLastMovement !== null) {
-          // decrement current router port counter
-          currentRouter.buffersCapacity[
-            oppositeDirection(packetLastMovement.direction)
-          ] -= 1;
-        }
-        // increment next router port counter
-        nextRouter.buffersCapacity[oppositeDirection(nextDirection)] += 1;
-        // update packet position and history
-        packet.position = nextPosition;
-        packet.history.push({
-          type: ActionType.Move,
-          direction: nextDirection,
-        });
-        packet.subsequentRoundsWaiting = 0;
-        if (equalCoordinates(packet.position, packet.destination)) {
-          packet.status = PacketStatus.Completed;
-        }
+      if (path.length > 1) {
+        const nextStep = path[1]; // Get the next step in the path
+        const direction = getDirection(packet.position, nextStep);
+        packet.history.push({ type: ActionType.Move, direction });
+        packet.position = nextStep;
       } else {
-        // wait
-        packet.history.push({
-          type: ActionType.Wait,
-          targetRouter: { x: nextPosition.x, y: nextPosition.y },
-          targetRouterPort: oppositeDirection(nextDirection),
-        });
-        packet.subsequentRoundsWaiting++;
-        if (packet.subsequentRoundsWaiting === 10) {
-          packet.history.push({
-            type: ActionType.GiveUp,
-          });
-          packet.status = PacketStatus.GivenUp;
-        }
+        packet.history.push({ type: ActionType.GiveUp });
+        packet.status = PacketStatus.GivenUp;
+      }
+
+      if (
+        packet.position.x === packet.destination.x &&
+        packet.position.y === packet.destination.y
+      ) {
+        packet.status = PacketStatus.Completed;
       }
     }
     activePackets = packets.filter(
@@ -155,7 +134,7 @@ function main(config: Config) {
     let pos = packet.origin;
     for (let action of packet.history) {
       if (action.type === ActionType.Move) {
-        let nextPos = move(pos, action.direction);
+        let nextPos = getNeighbor(pos, action.direction);
         console.log(
           `\t - Move from (${pos.x},${pos.y}) to (${nextPos.x},${nextPos.y})`
         );
@@ -171,67 +150,71 @@ function main(config: Config) {
   }
 }
 
-function calculateNextDirection(packet: Packet): Direction {
-  if (packet.position.x < packet.destination.x) {
-    return Direction.East;
+function getNeighbor(pos: Coordinate, direction: Direction): Coordinate {
+  switch (direction) {
+    case Direction.North:
+      return { x: pos.x, y: pos.y - 1 };
+    case Direction.South:
+      return { x: pos.x, y: pos.y + 1 };
+    case Direction.East:
+      return { x: pos.x + 1, y: pos.y };
+    case Direction.West:
+      return { x: pos.x - 1, y: pos.y };
+    default:
+      return pos;
   }
-  if (packet.position.x > packet.destination.x) {
-    return Direction.West;
-  }
-  if (packet.position.y < packet.destination.y) {
-    return Direction.South;
-  }
-  return Direction.North;
 }
 
-function cellHasPacketInIt(cell: Coordinate, packets: Array<Packet>) {
-  const packetCulprit = packets.find(
-    (packet) =>
-      packet.position.x === cell.x &&
-      packet.position.y === cell.y &&
-      packet.status === PacketStatus.Active
-  );
-  return {
-    hasPacketInIt: packetCulprit !== undefined,
-    packetCulprit: packetCulprit?.id,
-  };
+function getDirection(from: Coordinate, to: Coordinate): Direction {
+  if (to.x > from.x) return Direction.East;
+  if (to.x < from.x) return Direction.West;
+  if (to.y > from.y) return Direction.South;
+  if (to.y < from.y) return Direction.North;
+  throw new Error("Invalid direction");
 }
 
-function canEnterRouter(router: Router, port: Direction) {
-  return router.buffersCapacity[port] < 4;
-}
+function bfs(
+  start: Coordinate,
+  goal: Coordinate,
+  blockedCells: Set<string>,
+  routers: Array<Array<Router>>
+): Coordinate[] {
+  const queue: Array<{ coord: Coordinate; path: Coordinate[] }> = [
+    { coord: start, path: [start] },
+  ];
+  const visited = new Set<string>();
+  visited.add(`${start.x},${start.y}`);
 
-function oppositeDirection(direction: Direction) {
-  if (direction === Direction.South) return Direction.North;
-  if (direction === Direction.North) return Direction.South;
-  if (direction === Direction.East) return Direction.West;
-  return Direction.East;
-}
+  while (queue.length > 0) {
+    const { coord, path } = queue.shift()!;
 
-function getPacketLastMovement(packet: Packet) {
-  for (let i = packet.history.length - 1; i >= 0; i--) {
-    if (packet.history[i].type === ActionType.Move) {
-      return packet.history[i] as MoveAction;
+    if (coord.x === goal.x && coord.y === goal.y) {
+      return path;
+    }
+
+    for (const direction of [
+      Direction.North,
+      Direction.South,
+      Direction.East,
+      Direction.West,
+    ]) {
+      const neighbor = getNeighbor(coord, direction);
+
+      if (
+        neighbor.x >= 0 &&
+        neighbor.x < routers[0].length &&
+        neighbor.y >= 0 &&
+        neighbor.y < routers.length &&
+        !blockedCells.has(`${neighbor.x},${neighbor.y}`) &&
+        !visited.has(`${neighbor.x},${neighbor.y}`)
+      ) {
+        queue.push({ coord: neighbor, path: path.concat([neighbor]) });
+        visited.add(`${neighbor.x},${neighbor.y}`);
+      }
     }
   }
-  return null;
-}
 
-function move(position: Coordinate, direction: Direction): Coordinate {
-  if (direction === Direction.East) {
-    return { x: position.x + 1, y: position.y };
-  }
-  if (direction === Direction.West) {
-    return { x: position.x - 1, y: position.y };
-  }
-  if (direction === Direction.South) {
-    return { x: position.x, y: position.y + 1 };
-  }
-  return { x: position.x, y: position.y - 1 };
-}
-
-function equalCoordinates(a: Coordinate, b: Coordinate) {
-  return a.x === b.x && a.y === b.y;
+  return []; // Return an empty array if no path is found
 }
 
 const config = JSON.parse(

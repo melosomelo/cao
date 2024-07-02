@@ -9,7 +9,8 @@
     "typescript": "^5.4.5"
   },
   "scripts": {
-    "start": "ts-node src/index.ts"
+    "start": "ts-node src/index.ts",
+    "ts-node": "ts-node"
   },
   "dependencies": {
     "commander": "^12.1.0"
