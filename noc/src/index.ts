@@ -160,6 +160,7 @@ function main(config: Config) {
   }
 
   for (let packet of packets) {
+    let i = 0;
     console.log(`Stats for packet ${packet.id}`);
     console.log(
       `\tTotal amount of hops: ${
@@ -173,15 +174,19 @@ function main(config: Config) {
       if (action.type === ActionType.Move) {
         let nextPos = getNeighbor(pos, action.direction);
         console.log(
-          `\t - Move from (${pos.x},${pos.y}) to (${nextPos.x},${nextPos.y})`
+          `\t - t${i++} Move from (${pos.x},${pos.y}) to (${nextPos.x},${
+            nextPos.y
+          })`
         );
         pos = nextPos;
       } else if (action.type === ActionType.Wait) {
         console.log(
-          `\t - Waiting to enter router (${action.targetRouter.x},${action.targetRouter.y}) at port ${action.targetRouterPort}`
+          `\t - t${i++} Waiting to enter router (${action.targetRouter.x},${
+            action.targetRouter.y
+          }) at port ${action.targetRouterPort}`
         );
       } else if (action.type === ActionType.GiveUp) {
-        console.log(`\t - Gave up`);
+        console.log(`\t - t${i++} Gave up`);
       }
     }
   }
